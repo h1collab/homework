@@ -479,17 +479,7 @@ function buildDateStrip() {
     button.addEventListener(
       "click",
       () => {
-
-        if (
-          state.dateFilterActive &&
-          state.selectedDate === iso
-        ) {
-          state.dateFilterActive = false;
-          state.selectedDate = TODAY_ISO;
-        } else {
-          state.selectedDate = iso;
-          state.dateFilterActive = true;
-        }
+        state.selectedDate = iso;
 
         buildDateStrip();
         render();
@@ -1044,21 +1034,11 @@ function getFilteredHomework() {
       );
     })
 
-    .filter(item => {
-
-      if (state.dateFilterActive) {
-        return (
-          item.date ===
-          state.selectedDate
-        );
-      }
-
-      return (
-        item.date >=
-        TODAY_ISO
-      );
-
-    })
+    .filter(
+      item =>
+        item.date ===
+        state.selectedDate
+    )
 
     .sort(
       (a, b) =>
@@ -1089,18 +1069,16 @@ function render() {
     }`;
 
   els.viewCaption.textContent =
-    state.dateFilterActive
-      ? formatLongDate(
-          state.selectedDate
-        )
-      : "Da oggi in poi";
+    formatLongDate(
+      state.selectedDate
+    );
 
   els.updated.textContent =
-    state.dateFilterActive
-      ? formatLongDate(
+    state.selectedDate === TODAY_ISO
+      ? "Oggi"
+      : formatLongDate(
           state.selectedDate
-        )
-      : "Da oggi in poi";
+        );
 
   if (filtered.length === 0) {
     els.list.innerHTML = "";
@@ -1177,7 +1155,6 @@ els.reset.addEventListener(
     state.subject = "";
     state.selectedDate =
       TODAY_ISO;
-    state.dateFilterActive = false;
     state.weekOffset = 0;
 
     els.subjectValue.textContent =
