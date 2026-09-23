@@ -97,6 +97,16 @@ const TODAY_ISO =
 const state = {
   subject: "",
   selectedDate: TODAY_ISO,
+
+  /*
+   * false:
+   * mostra tutti i compiti da oggi in poi.
+   *
+   * true:
+   * mostra solo il giorno selezionato.
+   */
+  dateFilterActive: false,
+
   weekOffset: 0,
 
   carryDate: TODAY_ISO,
@@ -469,7 +479,17 @@ function buildDateStrip() {
     button.addEventListener(
       "click",
       () => {
-        state.selectedDate = iso;
+
+        if (
+          state.dateFilterActive &&
+          state.selectedDate === iso
+        ) {
+          state.dateFilterActive = false;
+          state.selectedDate = TODAY_ISO;
+        } else {
+          state.selectedDate = iso;
+          state.dateFilterActive = true;
+        }
 
         buildDateStrip();
         render();
@@ -1024,11 +1044,21 @@ function getFilteredHomework() {
       );
     })
 
-    .filter(
-      item =>
-        item.date ===
-        state.selectedDate
-    )
+    .filter(item => {
+
+      if (state.dateFilterActive) {
+        return (
+          item.date ===
+          state.selectedDate
+        );
+      }
+
+      return (
+        item.date >=
+        TODAY_ISO
+      );
+
+    })
 
     .sort(
       (a, b) =>
@@ -1059,17 +1089,18 @@ function render() {
     }`;
 
   els.viewCaption.textContent =
-    formatLongDate(
-      state.selectedDate
-    );
+    state.dateFilterActive
+      ? formatLongDate(
+          state.selectedDate
+        )
+      : "Da oggi in poi";
 
   els.updated.textContent =
-    state.selectedDate ===
-    TODAY_ISO
-      ? "Oggi"
-      : formatLongDate(
+    state.dateFilterActive
+      ? formatLongDate(
           state.selectedDate
-        );
+        )
+      : "Da oggi in poi";
 
   if (filtered.length === 0) {
     els.list.innerHTML = "";
@@ -1146,6 +1177,7 @@ els.reset.addEventListener(
     state.subject = "";
     state.selectedDate =
       TODAY_ISO;
+    state.dateFilterActive = false;
     state.weekOffset = 0;
 
     els.subjectValue.textContent =

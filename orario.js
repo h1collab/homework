@@ -11,8 +11,7 @@ window.ALL_SUBJECTS = [
   "Musica",
   "Tecnologia",
   "Motoria",
-  "Religione",
-  "Prolungamento"
+  "Religione"
 ];
 
 
@@ -38,9 +37,7 @@ window.TIMETABLE_DATA = {
       "Motoria",
       "Italiano",
       "Geometria",
-      "Inglese",
-      "Prolungamento",
-      "Prolungamento"
+      "Inglese"
     ]
   },
 
@@ -64,9 +61,7 @@ window.TIMETABLE_DATA = {
       "Inglese",
       "Italiano",
       "Aritmetica",
-      "Geografia",
-      "Prolungamento",
-      "Prolungamento"
+      "Geografia"
     ]
   },
 
