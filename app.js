@@ -3,40 +3,82 @@ const HOMEWORK =
     ? window.HOMEWORK_DATA.slice()
     : [];
 
-const QUICK_DAYS = 14;
 
 const state = {
   subject: "",
-  mode: "future",
-  date: null
+  selectedDate: null,
+  weekOffset: 0
 };
+
 
 const els = {
-  subject: document.querySelector("#subject-filter"),
-  chips: document.querySelector("#date-chips"),
-  reset: document.querySelector("#reset-filters"),
-  list: document.querySelector("#homework-list"),
-  empty: document.querySelector("#empty-state"),
-  count: document.querySelector("#result-count"),
-  updated: document.querySelector("#updated-label"),
-  rangeCaption: document.querySelector("#range-caption")
+  subjectSelect:
+    document.querySelector("#subject-select"),
+
+  subjectTrigger:
+    document.querySelector("#subject-trigger"),
+
+  subjectValue:
+    document.querySelector("#subject-value"),
+
+  subjectMenu:
+    document.querySelector("#subject-menu"),
+
+  dateStrip:
+    document.querySelector("#date-strip"),
+
+  monthTitle:
+    document.querySelector("#month-title"),
+
+  datePrev:
+    document.querySelector("#date-prev"),
+
+  dateNext:
+    document.querySelector("#date-next"),
+
+  reset:
+    document.querySelector("#reset-filters"),
+
+  viewCaption:
+    document.querySelector("#view-caption"),
+
+  list:
+    document.querySelector("#homework-list"),
+
+  empty:
+    document.querySelector("#empty-state"),
+
+  count:
+    document.querySelector("#result-count"),
+
+  updated:
+    document.querySelector("#updated-label")
 };
 
 
-function pad(number) {
-  return String(number).padStart(2, "0");
+function pad(value) {
+  return String(value).padStart(2, "0");
 }
 
 
 function toIsoDate(date) {
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+  return [
+    date.getFullYear(),
+    pad(date.getMonth() + 1),
+    pad(date.getDate())
+  ].join("-");
 }
 
 
 function parseIsoDate(value) {
-  const [year, month, day] = value.split("-").map(Number);
+  const [year, month, day] =
+    value.split("-").map(Number);
 
-  return new Date(year, month - 1, day);
+  return new Date(
+    year,
+    month - 1,
+    day
+  );
 }
 
 
@@ -52,39 +94,56 @@ function startOfToday() {
 
 
 function addDays(date, amount) {
-  const copy = new Date(date);
+  const result = new Date(date);
 
-  copy.setDate(copy.getDate() + amount);
+  result.setDate(
+    result.getDate() + amount
+  );
 
-  return copy;
+  return result;
 }
 
 
 const TODAY = startOfToday();
-const TODAY_VALUE = toIsoDate(TODAY);
+const TODAY_ISO = toIsoDate(TODAY);
 
 
 function escapeHtml(value = "") {
-  return String(value).replace(
-    /[&<>'"]/g,
-    character => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      "'": "&#39;",
-      "\"": "&quot;"
-    })[character]
-  );
+  return String(value)
+    .replace(
+      /[&<>'"]/g,
+      char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "'": "&#39;",
+        '"': "&quot;"
+      })[char]
+    );
 }
 
 
-function formatWeekdayShort(date) {
+function formatMonth(date) {
   return new Intl.DateTimeFormat(
     "it-IT",
-    { weekday: "short" }
+    {
+      month: "long",
+      year: "numeric"
+    }
+  ).format(date);
+}
+
+
+function formatWeekday(date) {
+  return new Intl.DateTimeFormat(
+    "it-IT",
+    {
+      weekday: "short"
+    }
   )
     .format(date)
-    .replace(".", "");
+    .replace(".", "")
+    .toUpperCase();
 }
 
 
@@ -96,220 +155,565 @@ function formatLongDate(value) {
       day: "numeric",
       month: "long"
     }
-  ).format(parseIsoDate(value));
+  ).format(
+    parseIsoDate(value)
+  );
 }
 
 
 function relativeLabel(value) {
-  const date = parseIsoDate(value);
+  const date =
+    parseIsoDate(value);
 
   const diff =
-    Math.round((date - TODAY) / 86400000);
+    Math.round(
+      (date - TODAY) / 86400000
+    );
 
-  if (diff === 0) return "Oggi";
-  if (diff === 1) return "Domani";
-  if (diff === 2) return "Dopodomani";
+  if (diff === 0) {
+    return "OGGI";
+  }
 
-  return "Giorno";
+  if (diff === 1) {
+    return "DOMANI";
+  }
+
+  if (diff === 2) {
+    return "DOPO DOMANI";
+  }
+
+  return "GIORNO";
 }
 
 
-function buildSubjectOptions() {
+function getSubjects() {
+  return [
+    ...new Set(
+      HOMEWORK
+        .map(item => item.subject)
+        .filter(Boolean)
+    )
+  ].sort(
+    (a, b) =>
+      a.localeCompare(
+        b,
+        "it-IT"
+      )
+  );
+}
+
+
+function buildSubjectMenu() {
+
   const subjects =
-    [...new Set(HOMEWORK.map(item => item.subject))]
-      .filter(Boolean)
-      .sort((a, b) => a.localeCompare(b, "it-IT"));
+    getSubjects();
 
-  els.subject.innerHTML =
-    `<option value="">Tutte le materie</option>`;
+  const values = [
+    "",
+    ...subjects
+  ];
 
-  subjects.forEach(subject => {
-    const option = document.createElement("option");
-    option.value = subject;
-    option.textContent = subject;
-    els.subject.appendChild(option);
-  });
-}
+  els.subjectMenu.innerHTML = "";
 
 
-function buildDateChips() {
-  els.chips.innerHTML = "";
+  values.forEach(value => {
 
-  const futureChip = document.createElement("button");
-  futureChip.type = "button";
-  futureChip.className =
-    `date-chip is-wide${state.mode === "future" ? " is-active" : ""}`;
+    const button =
+      document.createElement(
+        "button"
+      );
 
-  futureChip.innerHTML = `
-    <span class="date-chip-week">Vista</span>
-    <strong>Da oggi</strong>
-  `;
+    button.type = "button";
 
-  futureChip.addEventListener("click", () => {
-    state.mode = "future";
-    state.date = null;
-    buildDateChips();
-    render();
-  });
+    button.className =
+      "select-option";
 
-  els.chips.appendChild(futureChip);
 
-  for (let index = 0; index < QUICK_DAYS; index += 1) {
-    const date = addDays(TODAY, index);
-    const value = toIsoDate(date);
+    const selected =
+      state.subject === value;
 
-    const chip = document.createElement("button");
-    chip.type = "button";
-    chip.className =
-      `date-chip${state.mode === "date" && state.date === value ? " is-active" : ""}`;
 
-    chip.innerHTML = `
-      <span class="date-chip-week">${formatWeekdayShort(date)}</span>
-      <strong>${date.getDate()}</strong>
+    if (selected) {
+      button.classList.add(
+        "is-selected"
+      );
+    }
+
+
+    const label =
+      value ||
+      "Tutte le materie";
+
+
+    button.innerHTML = `
+      <span>${escapeHtml(label)}</span>
+
+      <svg
+        class="option-check"
+        viewBox="0 0 20 20"
+        aria-hidden="true"
+      >
+        <path
+          d="m5 10 3 3 7-7"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
     `;
 
-    chip.addEventListener("click", () => {
-      state.mode = "date";
-      state.date = value;
-      buildDateChips();
-      render();
-    });
 
-    els.chips.appendChild(chip);
+    button.addEventListener(
+      "click",
+      () => {
+
+        state.subject = value;
+
+        els.subjectValue
+          .textContent = label;
+
+        closeSubjectMenu();
+
+        buildSubjectMenu();
+
+        render();
+
+      }
+    );
+
+
+    els.subjectMenu.appendChild(
+      button
+    );
+
+  });
+
+}
+
+
+function openSubjectMenu() {
+  els.subjectMenu.hidden = false;
+
+  els.subjectTrigger
+    .classList
+    .add("is-open");
+
+  els.subjectTrigger
+    .setAttribute(
+      "aria-expanded",
+      "true"
+    );
+}
+
+
+function closeSubjectMenu() {
+  els.subjectMenu.hidden = true;
+
+  els.subjectTrigger
+    .classList
+    .remove("is-open");
+
+  els.subjectTrigger
+    .setAttribute(
+      "aria-expanded",
+      "false"
+    );
+}
+
+
+function toggleSubjectMenu() {
+  if (els.subjectMenu.hidden) {
+    openSubjectMenu();
+  } else {
+    closeSubjectMenu();
   }
 }
 
 
-function updateMeta() {
-  if (HOMEWORK.length === 0) {
-    els.updated.textContent = "Nessun compito pubblicato";
-  } else {
-    const sortedDates =
-      HOMEWORK
-        .map(item => item.date)
-        .sort();
+els.subjectTrigger
+  .addEventListener(
+    "click",
+    toggleSubjectMenu
+  );
 
-    const lastDate = sortedDates[sortedDates.length - 1];
-    els.updated.textContent =
-      `Ultimo giorno salvato: ${lastDate}`;
+
+document.addEventListener(
+  "click",
+  event => {
+
+    if (
+      !els.subjectSelect
+        .contains(event.target)
+    ) {
+      closeSubjectMenu();
+    }
+
+  }
+);
+
+
+function getWeekStart() {
+
+  return addDays(
+    TODAY,
+    state.weekOffset * 7
+  );
+
+}
+
+
+function buildDateStrip() {
+
+  const start =
+    getWeekStart();
+
+
+  els.monthTitle.textContent =
+    formatMonth(start);
+
+
+  els.dateStrip.innerHTML = "";
+
+
+  for (
+    let i = 0;
+    i < 7;
+    i += 1
+  ) {
+
+    const date =
+      addDays(start, i);
+
+    const iso =
+      toIsoDate(date);
+
+
+    const button =
+      document.createElement(
+        "button"
+      );
+
+    button.type = "button";
+
+    button.className =
+      "date-item";
+
+
+    if (iso === TODAY_ISO) {
+      button.classList.add(
+        "is-today"
+      );
+    }
+
+
+    if (
+      state.selectedDate === iso
+    ) {
+      button.classList.add(
+        "is-selected"
+      );
+    }
+
+
+    button.innerHTML = `
+      <span class="date-weekday">
+        ${formatWeekday(date)}
+      </span>
+
+      <span class="date-number">
+        ${date.getDate()}
+      </span>
+    `;
+
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        if (
+          state.selectedDate === iso
+        ) {
+
+          state.selectedDate = null;
+
+        } else {
+
+          state.selectedDate = iso;
+
+        }
+
+
+        buildDateStrip();
+
+        render();
+
+      }
+    );
+
+
+    els.dateStrip.appendChild(
+      button
+    );
+
   }
 
-  if (state.mode === "future") {
-    els.rangeCaption.textContent = "Da oggi in poi";
-  } else {
-    els.rangeCaption.textContent = formatLongDate(state.date);
+}
+
+
+els.datePrev.addEventListener(
+  "click",
+  () => {
+
+    state.weekOffset -= 1;
+
+    buildDateStrip();
+
   }
+);
+
+
+els.dateNext.addEventListener(
+  "click",
+  () => {
+
+    state.weekOffset += 1;
+
+    buildDateStrip();
+
+  }
+);
+
+
+function getFilteredHomework() {
+
+  return HOMEWORK
+    .filter(item => {
+
+      if (!state.subject) {
+        return true;
+      }
+
+      return (
+        item.subject ===
+        state.subject
+      );
+
+    })
+
+    .filter(item => {
+
+      if (state.selectedDate) {
+
+        return (
+          item.date ===
+          state.selectedDate
+        );
+
+      }
+
+      return (
+        item.date >=
+        TODAY_ISO
+      );
+
+    })
+
+    .sort(
+      (a, b) => {
+
+        const dateCompare =
+          a.date.localeCompare(
+            b.date
+          );
+
+        if (dateCompare !== 0) {
+          return dateCompare;
+        }
+
+        return (
+          a.subject.localeCompare(
+            b.subject,
+            "it-IT"
+          )
+        );
+
+      }
+    );
+
 }
 
 
 function groupByDate(items) {
-  return items.reduce((map, item) => {
+
+  const map =
+    new Map();
+
+
+  items.forEach(item => {
+
     if (!map.has(item.date)) {
-      map.set(item.date, []);
+      map.set(
+        item.date,
+        []
+      );
     }
 
-    map.get(item.date).push(item);
 
-    return map;
-  }, new Map());
-}
+    map
+      .get(item.date)
+      .push(item);
+
+  });
 
 
-function renderCards(items) {
-  return items.map(item => `
-    <article class="homework-card">
-      <div class="card-topline">
-        <span class="subject-pill">${escapeHtml(item.subject)}</span>
-      </div>
+  return map;
 
-      <h3>${escapeHtml(item.title)}</h3>
-      <p>${escapeHtml(item.details)}</p>
-    </article>
-  `).join("");
 }
 
 
 function render() {
-  let filtered = HOMEWORK.slice();
 
-  if (state.subject) {
-    filtered = filtered.filter(
-      item => item.subject === state.subject
-    );
-  }
+  const filtered =
+    getFilteredHomework();
 
-  if (state.mode === "future") {
-    filtered = filtered.filter(
-      item => item.date >= TODAY_VALUE
-    );
-  } else if (state.mode === "date" && state.date) {
-    filtered = filtered.filter(
-      item => item.date === state.date
-    );
-  }
-
-  filtered.sort((a, b) => {
-    const byDate = a.date.localeCompare(b.date);
-
-    if (byDate !== 0) return byDate;
-
-    return a.subject.localeCompare(b.subject, "it-IT");
-  });
 
   els.count.textContent =
-    `${filtered.length} ${filtered.length === 1 ? "compito" : "compiti"}`;
+    `${filtered.length} ${
+      filtered.length === 1
+        ? "compito"
+        : "compiti"
+    }`;
 
-  updateMeta();
+
+  if (state.selectedDate) {
+
+    els.viewCaption.textContent =
+      formatLongDate(
+        state.selectedDate
+      );
+
+  } else {
+
+    els.viewCaption.textContent =
+      "Da oggi in poi";
+
+  }
+
+
+  if (HOMEWORK.length === 0) {
+
+    els.updated.textContent =
+      "Nessun compito pubblicato";
+
+  } else {
+
+    const dates =
+      HOMEWORK
+        .map(item => item.date)
+        .sort();
+
+    els.updated.textContent =
+      `Ultimo aggiornamento: ${
+        dates[dates.length - 1]
+      }`;
+
+  }
+
 
   if (filtered.length === 0) {
+
     els.list.innerHTML = "";
+
     els.empty.hidden = false;
+
     return;
+
   }
+
 
   els.empty.hidden = true;
 
-  const groups = groupByDate(filtered);
 
-  const html = [...groups.entries()]
-    .map(([date, items]) => `
-      <section class="day-block">
-        <div class="day-head">
-          <div class="day-label">${relativeLabel(date)}</div>
-          <h2>${formatLongDate(date)}</h2>
-          <div class="day-subline">
-            ${items.length} ${items.length === 1 ? "compito" : "compiti"}
-          </div>
-        </div>
+  const groups =
+    groupByDate(filtered);
 
-        <div class="card-stack">
-          ${renderCards(items)}
-        </div>
-      </section>
-    `)
-    .join("");
 
-  els.list.innerHTML = html;
+  els.list.innerHTML =
+    [...groups.entries()]
+      .map(
+        ([date, items]) => `
+
+          <section class="day-block">
+
+            <div class="day-side">
+
+              <div class="day-badge">
+                ${relativeLabel(date)}
+              </div>
+
+              <h2>
+                ${formatLongDate(date)}
+              </h2>
+
+            </div>
+
+
+            <div class="cards">
+
+              ${items.map(
+                item => `
+
+                  <article class="homework-card">
+
+                    <span class="subject-pill">
+                      ${escapeHtml(item.subject)}
+                    </span>
+
+                    <h3>
+                      ${escapeHtml(item.title)}
+                    </h3>
+
+                    <p>
+                      ${escapeHtml(item.details)}
+                    </p>
+
+                  </article>
+
+                `
+              ).join("")}
+
+            </div>
+
+          </section>
+
+        `
+      )
+      .join("");
+
 }
 
 
-els.subject.addEventListener("change", event => {
-  state.subject = event.target.value;
-  render();
-});
+els.reset.addEventListener(
+  "click",
+  () => {
+
+    state.subject = "";
+    state.selectedDate = null;
+    state.weekOffset = 0;
+
+    els.subjectValue.textContent =
+      "Tutte le materie";
+
+    buildSubjectMenu();
+    buildDateStrip();
+    render();
+
+  }
+);
 
 
-els.reset.addEventListener("click", () => {
-  state.subject = "";
-  state.mode = "future";
-  state.date = null;
-  els.subject.value = "";
-
-  buildDateChips();
-  render();
-});
-
-
-buildSubjectOptions();
-buildDateChips();
+buildSubjectMenu();
+buildDateStrip();
 render();
