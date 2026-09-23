@@ -1,3 +1,21 @@
+window.ALL_SUBJECTS = [
+  "Italiano",
+  "Matematica",
+  "Aritmetica",
+  "Geometria",
+  "Inglese",
+  "Francese",
+  "Storia",
+  "Geografia",
+  "Arte",
+  "Musica",
+  "Tecnologia",
+  "Motoria",
+  "Religione",
+  "Prolungamento"
+];
+
+
 window.TIMETABLE_DATA = {
 
   1: {

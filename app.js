@@ -11,6 +11,11 @@ const NOTICES =
 const TIMETABLE =
   window.TIMETABLE_DATA || {};
 
+const ALL_SUBJECTS =
+  Array.isArray(window.ALL_SUBJECTS)
+    ? window.ALL_SUBJECTS.slice()
+    : [];
+
 
 function pad(value) {
   return String(value).padStart(2, "0");
@@ -70,15 +75,32 @@ function escapeHtml(value = "") {
 }
 
 
-const TODAY = startOfToday();
-const TODAY_ISO = toIsoDate(TODAY);
+function normalizeSubject(value = "") {
+  const clean =
+    String(value).trim();
+
+  if (/^men[uù]$/i.test(clean)) {
+    return "Musica";
+  }
+
+  return clean;
+}
+
+
+const TODAY =
+  startOfToday();
+
+const TODAY_ISO =
+  toIsoDate(TODAY);
 
 
 const state = {
   subject: "",
   selectedDate: TODAY_ISO,
   weekOffset: 0,
-  timetableOpen: false
+
+  carryDate: TODAY_ISO,
+  carryOpen: false
 };
 
 
@@ -133,6 +155,10 @@ const els = {
 };
 
 
+/* =========================================================
+   DATE FORMAT
+   ========================================================= */
+
 function formatMonth(date) {
   return new Intl.DateTimeFormat(
     "it-IT",
@@ -158,6 +184,20 @@ function formatWeekday(date) {
 
 
 function formatLongDate(value) {
+  return new Intl.DateTimeFormat(
+    "it-IT",
+    {
+      weekday: "long",
+      day: "numeric",
+      month: "long"
+    }
+  ).format(
+    parseIsoDate(value)
+  );
+}
+
+
+function formatCarryDate(value) {
   return new Intl.DateTimeFormat(
     "it-IT",
     {
@@ -197,16 +237,36 @@ function relativeLabel(value) {
 
 
 /* =========================================================
-   MATERIE
+   MATERIA - TUTTE LE MATERIE
    ========================================================= */
 
 function getSubjects() {
+  const homeworkSubjects =
+    HOMEWORK
+      .map(item =>
+        normalizeSubject(
+          item.subject
+        )
+      )
+      .filter(Boolean);
+
+  const timetableSubjects =
+    Object
+      .values(TIMETABLE)
+      .flatMap(day =>
+        Array.isArray(day.lessons)
+          ? day.lessons
+          : []
+      )
+      .map(normalizeSubject)
+      .filter(Boolean);
+
   return [
-    ...new Set(
-      HOMEWORK
-        .map(item => item.subject)
-        .filter(Boolean)
-    )
+    ...new Set([
+      ...ALL_SUBJECTS,
+      ...homeworkSubjects,
+      ...timetableSubjects
+    ])
   ].sort(
     (a, b) =>
       a.localeCompare(
@@ -230,7 +290,8 @@ function buildSubjectMenu() {
       document.createElement("button");
 
     button.type = "button";
-    button.className = "select-option";
+    button.className =
+      "select-option";
 
     if (state.subject === value) {
       button.classList.add(
@@ -239,14 +300,18 @@ function buildSubjectMenu() {
     }
 
     const label =
-      value || "Tutte le materie";
+      value ||
+      "Tutte le materie";
 
     button.innerHTML = `
-      <span>${escapeHtml(label)}</span>
+      <span>
+        ${escapeHtml(label)}
+      </span>
 
       <svg
         class="option-check"
         viewBox="0 0 20 20"
+        aria-hidden="true"
       >
         <path
           d="m5 10 3 3 7-7"
@@ -264,8 +329,8 @@ function buildSubjectMenu() {
       () => {
         state.subject = value;
 
-        els.subjectValue.textContent =
-          label;
+        els.subjectValue
+          .textContent = label;
 
         closeSubjectMenu();
 
@@ -274,9 +339,8 @@ function buildSubjectMenu() {
       }
     );
 
-    els.subjectMenu.appendChild(
-      button
-    );
+    els.subjectMenu
+      .appendChild(button);
   });
 }
 
@@ -285,7 +349,8 @@ function openSubjectMenu() {
   els.subjectMenu.hidden = false;
 
   els.subjectTrigger
-    .classList.add("is-open");
+    .classList
+    .add("is-open");
 
   els.subjectTrigger
     .setAttribute(
@@ -299,7 +364,8 @@ function closeSubjectMenu() {
   els.subjectMenu.hidden = true;
 
   els.subjectTrigger
-    .classList.remove("is-open");
+    .classList
+    .remove("is-open");
 
   els.subjectTrigger
     .setAttribute(
@@ -309,25 +375,25 @@ function closeSubjectMenu() {
 }
 
 
-els.subjectTrigger.addEventListener(
-  "click",
-  () => {
-    if (els.subjectMenu.hidden) {
-      openSubjectMenu();
-    } else {
-      closeSubjectMenu();
+els.subjectTrigger
+  .addEventListener(
+    "click",
+    () => {
+      if (els.subjectMenu.hidden) {
+        openSubjectMenu();
+      } else {
+        closeSubjectMenu();
+      }
     }
-  }
-);
+  );
 
 
 document.addEventListener(
   "click",
   event => {
     if (
-      !els.subjectSelect.contains(
-        event.target
-      )
+      !els.subjectSelect
+        .contains(event.target)
     ) {
       closeSubjectMenu();
     }
@@ -336,7 +402,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   CALENDARIO
+   CALENDARIO COMPITI
    ========================================================= */
 
 function getWeekStart() {
@@ -348,7 +414,8 @@ function getWeekStart() {
 
 
 function buildDateStrip() {
-  const start = getWeekStart();
+  const start =
+    getWeekStart();
 
   els.monthTitle.textContent =
     formatMonth(start);
@@ -367,10 +434,13 @@ function buildDateStrip() {
       toIsoDate(date);
 
     const button =
-      document.createElement("button");
+      document.createElement(
+        "button"
+      );
 
     button.type = "button";
-    button.className = "date-item";
+    button.className =
+      "date-item";
 
     if (iso === TODAY_ISO) {
       button.classList.add(
@@ -406,9 +476,8 @@ function buildDateStrip() {
       }
     );
 
-    els.dateStrip.appendChild(
-      button
-    );
+    els.dateStrip
+      .appendChild(button);
   }
 }
 
@@ -432,16 +501,43 @@ els.dateNext.addEventListener(
 
 
 /* =========================================================
-   ORARIO / COSA PORTARE
+   COSA PORTARE
    ========================================================= */
+
+function schoolDayMove(
+  value,
+  direction
+) {
+  let date =
+    parseIsoDate(value);
+
+  do {
+    date =
+      addDays(
+        date,
+        direction
+      );
+  }
+  while (
+    date.getDay() === 0 ||
+    date.getDay() === 6
+  );
+
+  return toIsoDate(date);
+}
+
 
 function uniqueLessons(lessons) {
   return [
     ...new Set(
-      lessons.filter(
-        lesson =>
-          lesson !== "Prolungamento"
-      )
+      lessons
+        .map(normalizeSubject)
+        .filter(Boolean)
+        .filter(
+          lesson =>
+            lesson !==
+            "Prolungamento"
+        )
     )
   ];
 }
@@ -452,148 +548,138 @@ function renderSchedule() {
     return;
   }
 
-  const selected =
+  const selectedDate =
     parseIsoDate(
-      state.selectedDate
+      state.carryDate
     );
 
   const weekday =
-    selected.getDay();
+    selectedDate.getDay();
 
-  const day =
+  const timetableDay =
     TIMETABLE[weekday];
 
-  let currentContent = "";
+  const isToday =
+    state.carryDate ===
+    TODAY_ISO;
 
-  if (!day) {
-    currentContent = `
-      <div class="carry-empty">
-        Nessuna lezione prevista.
-      </div>
-    `;
-  } else {
-    const items =
-      uniqueLessons(day.lessons);
+  const dayName =
+    timetableDay
+      ? timetableDay.day
+      : new Intl.DateTimeFormat(
+          "it-IT",
+          { weekday: "long" }
+        ).format(selectedDate);
 
-    currentContent = `
-      <div class="carry-subjects">
 
-        ${items.map(
-          subject => `
-            <span class="carry-pill">
-              ${escapeHtml(subject)}
-            </span>
-          `
-        ).join("")}
+  let collapsedSummary = "";
 
+  if (timetableDay) {
+    const unique =
+      uniqueLessons(
+        timetableDay.lessons
+      );
+
+    collapsedSummary = `
+      <div class="carry-preview">
+        ${unique
+          .slice(0, 4)
+          .map(
+            subject => `
+              <span>
+                ${escapeHtml(subject)}
+              </span>
+            `
+          )
+          .join("")}
+
+        ${
+          unique.length > 4
+            ? `<span>+${unique.length - 4}</span>`
+            : ""
+        }
       </div>
     `;
   }
 
 
-  const weekHtml =
-    [1, 2, 3, 4, 5]
-      .map(number => {
-        const item =
-          TIMETABLE[number];
+  let details = "";
 
-        if (!item) {
-          return "";
-        }
+  if (state.carryOpen) {
+    if (!timetableDay) {
+      details = `
+        <div class="carry-details">
+          <div class="carry-empty">
+            Nessuna lezione prevista.
+          </div>
+        </div>
+      `;
+    } else {
+      const unique =
+        uniqueLessons(
+          timetableDay.lessons
+        );
 
-        const active =
-          weekday === number
-            ? " is-current"
-            : "";
+      details = `
+        <div class="carry-details">
 
-        return `
-          <article class="timetable-day${active}">
+          <div class="carry-subjects">
+            ${unique.map(
+              subject => `
+                <span class="carry-pill">
+                  ${escapeHtml(subject)}
+                </span>
+              `
+            ).join("")}
+          </div>
 
-            <div class="timetable-day-name">
-              ${escapeHtml(item.day)}
-            </div>
-
-            <div class="lesson-list">
-
-              ${item.lessons.map(
+          <div class="carry-lessons">
+            ${timetableDay.lessons
+              .map(
                 (lesson, index) => `
-                  <div class="lesson-row">
+                  <div class="carry-lesson-row">
 
-                    <span class="lesson-number">
-                      ${index + 1}
+                    <span class="carry-hour">
+                      ${index + 1}ª
                     </span>
 
-                    <span class="lesson-name">
-                      ${escapeHtml(lesson)}
+                    <span class="carry-lesson-name">
+                      ${escapeHtml(
+                        normalizeSubject(
+                          lesson
+                        )
+                      )}
                     </span>
 
                   </div>
                 `
-              ).join("")}
+              )
+              .join("")}
+          </div>
 
-            </div>
-
-          </article>
-        `;
-      })
-      .join("");
+        </div>
+      `;
+    }
+  }
 
 
   els.schedule.innerHTML = `
+    <section
+      class="carry-card"
+      id="carry-card"
+    >
 
-    <section class="carry-card">
-
-      <div class="carry-head">
-
-        <div>
-
-          <div class="carry-kicker">
-            ORARIO
-          </div>
-
-          <h2>
-            ${
-              day
-                ? `Cosa portare ${day.day.toLowerCase()}`
-                : "Cosa portare"
-            }
-          </h2>
-
-          <p>
-            ${
-              day
-                ? `${day.lessons.length} ore previste`
-                : "Nessuna lezione prevista per questo giorno."
-            }
-          </p>
-
-        </div>
-
+      <div class="carry-main-row">
 
         <button
-          id="timetable-toggle"
-          class="timetable-toggle"
           type="button"
+          class="carry-arrow"
+          id="carry-prev"
+          aria-label="Giorno precedente"
         >
-
-          <span>
-            ${
-              state.timetableOpen
-                ? "Nascondi orario"
-                : "Orario settimanale"
-            }
-          </span>
-
-          <svg
-            class="${
-              state.timetableOpen
-                ? "is-open"
-                : ""
-            }"
-            viewBox="0 0 20 20"
-          >
+          <svg viewBox="0 0 20 20">
             <path
-              d="M5 7.5 10 12.5 15 7.5"
+              d="M12 5 7 10l5 5"
               fill="none"
               stroke="currentColor"
               stroke-width="1.6"
@@ -601,41 +687,251 @@ function renderSchedule() {
               stroke-linejoin="round"
             />
           </svg>
+        </button>
 
+
+        <button
+          type="button"
+          class="carry-center"
+          id="carry-toggle"
+          aria-expanded="${state.carryOpen}"
+        >
+
+          <div class="carry-kicker">
+            COSA PORTARE
+          </div>
+
+          <div class="carry-title-row">
+
+            <h2>
+              ${
+                isToday
+                  ? "Oggi"
+                  : escapeHtml(dayName)
+              }
+            </h2>
+
+            <svg
+              class="carry-chevron ${
+                state.carryOpen
+                  ? "is-open"
+                  : ""
+              }"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M5 7.5 10 12.5 15 7.5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+          </div>
+
+          <div class="carry-date">
+            ${escapeHtml(
+              formatCarryDate(
+                state.carryDate
+              )
+            )}
+          </div>
+
+          ${
+            !state.carryOpen
+              ? collapsedSummary
+              : ""
+          }
+
+        </button>
+
+
+        <button
+          type="button"
+          class="carry-arrow"
+          id="carry-next"
+          aria-label="Giorno successivo"
+        >
+          <svg viewBox="0 0 20 20">
+            <path
+              d="m8 5 5 5-5 5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
         </button>
 
       </div>
 
 
-      ${currentContent}
+      ${
+        !isToday
+          ? `
+            <button
+              id="carry-today"
+              class="carry-today"
+              type="button"
+            >
+              Torna a oggi
+            </button>
+          `
+          : ""
+      }
 
 
-      <div
-        class="weekly-timetable"
-        ${state.timetableOpen ? "" : "hidden"}
-      >
-
-        ${weekHtml}
-
-      </div>
+      ${details}
 
     </section>
   `;
 
 
-  const toggle =
+  const prev =
     document.querySelector(
-      "#timetable-toggle"
+      "#carry-prev"
     );
 
-  if (toggle) {
-    toggle.addEventListener(
-      "click",
-      () => {
-        state.timetableOpen =
-          !state.timetableOpen;
+  const next =
+    document.querySelector(
+      "#carry-next"
+    );
+
+  const toggle =
+    document.querySelector(
+      "#carry-toggle"
+    );
+
+  const today =
+    document.querySelector(
+      "#carry-today"
+    );
+
+  const card =
+    document.querySelector(
+      "#carry-card"
+    );
+
+
+  prev?.addEventListener(
+    "click",
+    event => {
+      event.stopPropagation();
+
+      state.carryDate =
+        schoolDayMove(
+          state.carryDate,
+          -1
+        );
+
+      renderSchedule();
+    }
+  );
+
+
+  next?.addEventListener(
+    "click",
+    event => {
+      event.stopPropagation();
+
+      state.carryDate =
+        schoolDayMove(
+          state.carryDate,
+          1
+        );
+
+      renderSchedule();
+    }
+  );
+
+
+  toggle?.addEventListener(
+    "click",
+    () => {
+      state.carryOpen =
+        !state.carryOpen;
+
+      renderSchedule();
+    }
+  );
+
+
+  today?.addEventListener(
+    "click",
+    () => {
+      state.carryDate =
+        TODAY_ISO;
+
+      renderSchedule();
+    }
+  );
+
+
+  if (card) {
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    card.addEventListener(
+      "touchstart",
+      event => {
+        const touch =
+          event.changedTouches[0];
+
+        touchStartX =
+          touch.clientX;
+
+        touchStartY =
+          touch.clientY;
+      },
+      {
+        passive: true
+      }
+    );
+
+
+    card.addEventListener(
+      "touchend",
+      event => {
+        const touch =
+          event.changedTouches[0];
+
+        const deltaX =
+          touch.clientX -
+          touchStartX;
+
+        const deltaY =
+          touch.clientY -
+          touchStartY;
+
+        if (
+          Math.abs(deltaX) < 55 ||
+          Math.abs(deltaX) <
+          Math.abs(deltaY)
+        ) {
+          return;
+        }
+
+        if (deltaX < 0) {
+          state.carryDate =
+            schoolDayMove(
+              state.carryDate,
+              1
+            );
+        } else {
+          state.carryDate =
+            schoolDayMove(
+              state.carryDate,
+              -1
+            );
+        }
 
         renderSchedule();
+      },
+      {
+        passive: true
       }
     );
   }
@@ -666,7 +962,8 @@ function renderNotices() {
     notices
       .map(notice => {
         const urgent =
-          notice.type === "urgent";
+          notice.type ===
+          "urgent";
 
         return `
           <article class="
@@ -685,11 +982,15 @@ function renderNotices() {
             <div class="notice-content">
 
               <h3 class="notice-title">
-                ${escapeHtml(notice.title)}
+                ${escapeHtml(
+                  notice.title
+                )}
               </h3>
 
               <p class="notice-text">
-                ${escapeHtml(notice.text)}
+                ${escapeHtml(
+                  notice.text
+                )}
               </p>
 
             </div>
@@ -708,12 +1009,17 @@ function renderNotices() {
 function getFilteredHomework() {
   return HOMEWORK
     .filter(item => {
+      const subject =
+        normalizeSubject(
+          item.subject
+        );
+
       if (!state.subject) {
         return true;
       }
 
       return (
-        item.subject ===
+        subject ===
         state.subject
       );
     })
@@ -726,8 +1032,12 @@ function getFilteredHomework() {
 
     .sort(
       (a, b) =>
-        a.subject.localeCompare(
-          b.subject,
+        normalizeSubject(
+          a.subject
+        ).localeCompare(
+          normalizeSubject(
+            b.subject
+          ),
           "it-IT"
         )
     );
@@ -754,7 +1064,8 @@ function render() {
     );
 
   els.updated.textContent =
-    state.selectedDate === TODAY_ISO
+    state.selectedDate ===
+    TODAY_ISO
       ? "Oggi"
       : formatLongDate(
           state.selectedDate
@@ -790,13 +1101,15 @@ function render() {
 
       <div class="cards">
 
-        ${filtered
-          .map(item => `
+        ${filtered.map(
+          item => `
             <article class="homework-card">
 
               <span class="subject-pill">
                 ${escapeHtml(
-                  item.subject
+                  normalizeSubject(
+                    item.subject
+                  )
                 )}
               </span>
 
@@ -813,8 +1126,8 @@ function render() {
               </p>
 
             </article>
-          `)
-          .join("")}
+          `
+        ).join("")}
 
       </div>
 
@@ -823,11 +1136,16 @@ function render() {
 }
 
 
+/* =========================================================
+   RESET
+   ========================================================= */
+
 els.reset.addEventListener(
   "click",
   () => {
     state.subject = "";
-    state.selectedDate = TODAY_ISO;
+    state.selectedDate =
+      TODAY_ISO;
     state.weekOffset = 0;
 
     els.subjectValue.textContent =
