@@ -1,35 +1,42 @@
-const data =
+const HOMEWORK =
   Array.isArray(window.HOMEWORK_DATA)
-    ? window.HOMEWORK_DATA
+    ? window.HOMEWORK_DATA.slice()
     : [];
 
+const QUICK_DAYS = 14;
+
+const state = {
+  subject: "",
+  mode: "future",
+  date: null
+};
 
 const els = {
+  subject: document.querySelector("#subject-filter"),
+  chips: document.querySelector("#date-chips"),
+  reset: document.querySelector("#reset-filters"),
   list: document.querySelector("#homework-list"),
   empty: document.querySelector("#empty-state"),
-
-  subject: document.querySelector("#subject-filter"),
-  range: document.querySelector("#range-filter"),
-  date: document.querySelector("#date-filter"),
-  dateWrap: document.querySelector("#date-wrap"),
-
   count: document.querySelector("#result-count"),
-  updated: document.querySelector("#updated-at"),
-
-  clear: document.querySelector("#clear-filters"),
-  theme: document.querySelector("#theme-toggle")
+  updated: document.querySelector("#updated-label"),
+  rangeCaption: document.querySelector("#range-caption")
 };
 
 
-function parseDate(value) {
-  const [year, month, day] =
-    value.split("-").map(Number);
+function pad(number) {
+  return String(number).padStart(2, "0");
+}
 
-  return new Date(
-    year,
-    month - 1,
-    day
-  );
+
+function toIsoDate(date) {
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+
+function parseIsoDate(value) {
+  const [year, month, day] = value.split("-").map(Number);
+
+  return new Date(year, month - 1, day);
 }
 
 
@@ -44,65 +51,20 @@ function startOfToday() {
 }
 
 
-function toDateInputValue(date) {
-  const year = date.getFullYear();
+function addDays(date, amount) {
+  const copy = new Date(date);
 
-  const month =
-    String(date.getMonth() + 1)
-      .padStart(2, "0");
+  copy.setDate(copy.getDate() + amount);
 
-  const day =
-    String(date.getDate())
-      .padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
+  return copy;
 }
 
 
-function formatDate(value) {
-
-  const date = parseDate(value);
-
-  return new Intl.DateTimeFormat(
-    "zh-CN",
-    {
-      month: "long",
-      day: "numeric",
-      weekday: "short"
-    }
-  ).format(date);
-
-}
-
-
-function relativeDateLabel(value) {
-
-  const date = parseDate(value);
-  const today = startOfToday();
-
-  const difference =
-    Math.round(
-      (date - today) / 86400000
-    );
-
-  if (difference === 0) {
-    return "今天";
-  }
-
-  if (difference === 1) {
-    return "明天";
-  }
-
-  if (difference === 2) {
-    return "后天";
-  }
-
-  return "作业";
-}
+const TODAY = startOfToday();
+const TODAY_VALUE = toIsoDate(TODAY);
 
 
 function escapeHtml(value = "") {
-
   return String(value).replace(
     /[&<>'"]/g,
     character => ({
@@ -113,402 +75,241 @@ function escapeHtml(value = "") {
       "\"": "&quot;"
     })[character]
   );
-
 }
 
 
-const subjects =
-  [
-    ...new Set(
-      data.map(item => item.subject)
-    )
-  ].sort(
-    (a, b) =>
-      a.localeCompare(b, "zh-CN")
-  );
+function formatWeekdayShort(date) {
+  return new Intl.DateTimeFormat(
+    "it-IT",
+    { weekday: "short" }
+  )
+    .format(date)
+    .replace(".", "");
+}
 
 
-subjects.forEach(subject => {
+function formatLongDate(value) {
+  return new Intl.DateTimeFormat(
+    "it-IT",
+    {
+      weekday: "long",
+      day: "numeric",
+      month: "long"
+    }
+  ).format(parseIsoDate(value));
+}
 
-  const option =
-    document.createElement("option");
 
-  option.value = subject;
-  option.textContent = subject;
+function relativeLabel(value) {
+  const date = parseIsoDate(value);
 
-  els.subject.appendChild(option);
+  const diff =
+    Math.round((date - TODAY) / 86400000);
 
-});
+  if (diff === 0) return "Oggi";
+  if (diff === 1) return "Domani";
+  if (diff === 2) return "Dopodomani";
+
+  return "Giorno";
+}
 
 
-els.date.value =
-  toDateInputValue(
-    startOfToday()
-  );
+function buildSubjectOptions() {
+  const subjects =
+    [...new Set(HOMEWORK.map(item => item.subject))]
+      .filter(Boolean)
+      .sort((a, b) => a.localeCompare(b, "it-IT"));
+
+  els.subject.innerHTML =
+    `<option value="">Tutte le materie</option>`;
+
+  subjects.forEach(subject => {
+    const option = document.createElement("option");
+    option.value = subject;
+    option.textContent = subject;
+    els.subject.appendChild(option);
+  });
+}
+
+
+function buildDateChips() {
+  els.chips.innerHTML = "";
+
+  const futureChip = document.createElement("button");
+  futureChip.type = "button";
+  futureChip.className =
+    `date-chip is-wide${state.mode === "future" ? " is-active" : ""}`;
+
+  futureChip.innerHTML = `
+    <span class="date-chip-week">Vista</span>
+    <strong>Da oggi</strong>
+  `;
+
+  futureChip.addEventListener("click", () => {
+    state.mode = "future";
+    state.date = null;
+    buildDateChips();
+    render();
+  });
+
+  els.chips.appendChild(futureChip);
+
+  for (let index = 0; index < QUICK_DAYS; index += 1) {
+    const date = addDays(TODAY, index);
+    const value = toIsoDate(date);
+
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className =
+      `date-chip${state.mode === "date" && state.date === value ? " is-active" : ""}`;
+
+    chip.innerHTML = `
+      <span class="date-chip-week">${formatWeekdayShort(date)}</span>
+      <strong>${date.getDate()}</strong>
+    `;
+
+    chip.addEventListener("click", () => {
+      state.mode = "date";
+      state.date = value;
+      buildDateChips();
+      render();
+    });
+
+    els.chips.appendChild(chip);
+  }
+}
+
+
+function updateMeta() {
+  if (HOMEWORK.length === 0) {
+    els.updated.textContent = "Nessun compito pubblicato";
+  } else {
+    const sortedDates =
+      HOMEWORK
+        .map(item => item.date)
+        .sort();
+
+    const lastDate = sortedDates[sortedDates.length - 1];
+    els.updated.textContent =
+      `Ultimo giorno salvato: ${lastDate}`;
+  }
+
+  if (state.mode === "future") {
+    els.rangeCaption.textContent = "Da oggi in poi";
+  } else {
+    els.rangeCaption.textContent = formatLongDate(state.date);
+  }
+}
 
 
 function groupByDate(items) {
+  return items.reduce((map, item) => {
+    if (!map.has(item.date)) {
+      map.set(item.date, []);
+    }
 
-  return items.reduce(
-    (map, item) => {
+    map.get(item.date).push(item);
 
-      if (!map.has(item.date)) {
-        map.set(
-          item.date,
-          []
-        );
-      }
+    return map;
+  }, new Map());
+}
 
-      map
-        .get(item.date)
-        .push(item);
 
-      return map;
+function renderCards(items) {
+  return items.map(item => `
+    <article class="homework-card">
+      <div class="card-topline">
+        <span class="subject-pill">${escapeHtml(item.subject)}</span>
+      </div>
 
-    },
-    new Map()
-  );
-
+      <h3>${escapeHtml(item.title)}</h3>
+      <p>${escapeHtml(item.details)}</p>
+    </article>
+  `).join("");
 }
 
 
 function render() {
+  let filtered = HOMEWORK.slice();
 
-  const subject =
-    els.subject.value;
+  if (state.subject) {
+    filtered = filtered.filter(
+      item => item.subject === state.subject
+    );
+  }
 
-  const range =
-    els.range.value;
+  if (state.mode === "future") {
+    filtered = filtered.filter(
+      item => item.date >= TODAY_VALUE
+    );
+  } else if (state.mode === "date" && state.date) {
+    filtered = filtered.filter(
+      item => item.date === state.date
+    );
+  }
 
-  const selectedDate =
-    els.date.value;
+  filtered.sort((a, b) => {
+    const byDate = a.date.localeCompare(b.date);
 
-  const today =
-    startOfToday();
+    if (byDate !== 0) return byDate;
 
-
-  els.dateWrap.hidden =
-    range !== "date";
-
-
-  const filtered =
-    data
-
-      .filter(item => {
-
-        if (!subject) {
-          return true;
-        }
-
-        return (
-          item.subject === subject
-        );
-
-      })
-
-      .filter(item => {
-
-        const itemDate =
-          parseDate(item.date);
-
-
-        if (range === "future") {
-
-          return (
-            itemDate >= today
-          );
-
-        }
-
-
-        if (range === "date") {
-
-          return (
-            item.date ===
-            selectedDate
-          );
-
-        }
-
-
-        return true;
-
-      })
-
-      .sort(
-        (a, b) => {
-
-          const dateSort =
-            a.date.localeCompare(
-              b.date
-            );
-
-          if (dateSort !== 0) {
-            return dateSort;
-          }
-
-          return (
-            a.subject.localeCompare(
-              b.subject,
-              "zh-CN"
-            )
-          );
-
-        }
-      );
-
-
-  els.list.innerHTML = "";
-
-
-  els.empty.hidden =
-    filtered.length !== 0;
-
+    return a.subject.localeCompare(b.subject, "it-IT");
+  });
 
   els.count.textContent =
-    `${filtered.length} 项作业`;
+    `${filtered.length} ${filtered.length === 1 ? "compito" : "compiti"}`;
 
+  updateMeta();
 
-  const groups =
-    groupByDate(filtered);
+  if (filtered.length === 0) {
+    els.list.innerHTML = "";
+    els.empty.hidden = false;
+    return;
+  }
 
+  els.empty.hidden = true;
 
-  for (
-    const [date, items]
-    of groups
-  ) {
+  const groups = groupByDate(filtered);
 
-    const section =
-      document.createElement(
-        "section"
-      );
-
-    section.className =
-      "day-section";
-
-
-    const heading =
-      document.createElement(
-        "div"
-      );
-
-    heading.className =
-      "day-heading";
-
-
-    const relative =
-      relativeDateLabel(date);
-
-
-    heading.innerHTML = `
-      <div>
-        <span class="day-relative">
-          ${relative}
-        </span>
-
-        <h2>
-          ${formatDate(date)}
-        </h2>
-      </div>
-
-      <span class="day-count">
-        ${items.length}
-      </span>
-    `;
-
-
-    const cards =
-      document.createElement(
-        "div"
-      );
-
-    cards.className =
-      "cards";
-
-
-    items.forEach(item => {
-
-      const card =
-        document.createElement(
-          "article"
-        );
-
-      card.className =
-        "homework-card";
-
-
-      card.innerHTML = `
-        <div class="card-topline">
-          <span class="subject-tag">
-            ${escapeHtml(item.subject)}
-          </span>
+  const html = [...groups.entries()]
+    .map(([date, items]) => `
+      <section class="day-block">
+        <div class="day-head">
+          <div class="day-label">${relativeLabel(date)}</div>
+          <h2>${formatLongDate(date)}</h2>
+          <div class="day-subline">
+            ${items.length} ${items.length === 1 ? "compito" : "compiti"}
+          </div>
         </div>
 
-        <h3>
-          ${escapeHtml(item.title)}
-        </h3>
+        <div class="card-stack">
+          ${renderCards(items)}
+        </div>
+      </section>
+    `)
+    .join("");
 
-        <p>${escapeHtml(item.details)}</p>
-      `;
-
-
-      cards.appendChild(card);
-
-    });
-
-
-    section.append(
-      heading,
-      cards
-    );
-
-
-    els.list.appendChild(
-      section
-    );
-
-  }
-
+  els.list.innerHTML = html;
 }
 
 
-function setTheme(theme) {
-
-  document.documentElement
-    .dataset
-    .theme = theme;
-
-
-  localStorage.setItem(
-    "u22-theme",
-    theme
-  );
+els.subject.addEventListener("change", event => {
+  state.subject = event.target.value;
+  render();
+});
 
 
-  if (theme === "dark") {
+els.reset.addEventListener("click", () => {
+  state.subject = "";
+  state.mode = "future";
+  state.date = null;
+  els.subject.value = "";
 
-    els.theme.textContent =
-      "☀︎";
-
-    els.theme.setAttribute(
-      "aria-label",
-      "切换到浅色"
-    );
-
-  } else {
-
-    els.theme.textContent =
-      "☾";
-
-    els.theme.setAttribute(
-      "aria-label",
-      "切换到深色"
-    );
-
-  }
-
-}
+  buildDateChips();
+  render();
+});
 
 
-const savedTheme =
-  localStorage.getItem(
-    "u22-theme"
-  );
-
-
-const systemDark =
-  window.matchMedia(
-    "(prefers-color-scheme: dark)"
-  ).matches;
-
-
-setTheme(
-  savedTheme ||
-  (
-    systemDark
-      ? "dark"
-      : "light"
-  )
-);
-
-
-els.theme.addEventListener(
-  "click",
-  () => {
-
-    const current =
-      document
-        .documentElement
-        .dataset
-        .theme;
-
-    setTheme(
-      current === "dark"
-        ? "light"
-        : "dark"
-    );
-
-  }
-);
-
-
-els.subject.addEventListener(
-  "change",
-  render
-);
-
-
-els.range.addEventListener(
-  "change",
-  render
-);
-
-
-els.date.addEventListener(
-  "change",
-  render
-);
-
-
-els.clear.addEventListener(
-  "click",
-  () => {
-
-    els.subject.value = "";
-    els.range.value = "future";
-
-    els.date.value =
-      toDateInputValue(
-        startOfToday()
-      );
-
-    render();
-
-  }
-);
-
-
-const allDates =
-  data
-    .map(item => item.date)
-    .sort();
-
-
-const furthestDate =
-  allDates.at(-1);
-
-
-if (furthestDate) {
-
-  els.updated.textContent =
-    `最远至 ${furthestDate}`;
-
-} else {
-
-  els.updated.textContent =
-    "暂无数据";
-
-}
-
-
+buildSubjectOptions();
+buildDateChips();
 render();

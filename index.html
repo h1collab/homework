@@ -1,160 +1,84 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="it">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
-  <meta name="theme-color" content="#f7f7f5">
+  <meta name="theme-color" content="#f7f7f2">
 
-  <title>U22 作业</title>
+  <title>U22 Homework</title>
 
   <link rel="stylesheet" href="./style.css">
 </head>
-
 <body>
   <div class="page-shell">
 
     <header class="topbar">
-      <a class="brand" href="./" aria-label="U22 作业首页">
-        <span class="brand-mark">U</span>
-
-        <span class="brand-text">
-          <strong>U22 作业</strong>
-          <small>Homework</small>
-        </span>
+      <a href="./" class="brand" aria-label="U22 Homework">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">U22</span>
       </a>
 
-      <button
-        id="theme-toggle"
-        class="icon-button"
-        type="button"
-        aria-label="切换深浅色"
-      >
-        ☾
-      </button>
+      <div class="topbar-right">
+        <span class="top-tag">Interno</span>
+      </div>
     </header>
 
     <main>
-
       <section class="hero">
-        <p class="eyebrow">U22 · HOMEWORK</p>
-
-        <h1>今天之后的作业</h1>
-
-        <p class="hero-description">
-          查看近期作业，也可以按照日期和科目筛选。
+        <p class="eyebrow">U22 HOMEWORK</p>
+        <h1>Compiti, in modo semplice.</h1>
+        <p class="hero-copy">
+          Visualizza i compiti a partire da oggi, oppure filtra per giorno e materia.
         </p>
       </section>
 
-
-      <section class="filter-panel">
-
-        <div class="filter-grid">
-
-          <label class="field">
-            <span>日期范围</span>
-
-            <select id="range-filter">
-              <option value="future" selected>
-                从今天开始
-              </option>
-
-              <option value="date">
-                指定日期
-              </option>
-
-              <option value="all">
-                全部日期
-              </option>
-            </select>
-          </label>
-
-
-          <label
-            id="date-wrap"
-            class="field"
-            hidden
-          >
-            <span>选择日期</span>
-
-            <input
-              id="date-filter"
-              type="date"
-            >
-          </label>
-
-
-          <label class="field">
-            <span>科目</span>
-
+      <section class="control-panel">
+        <div class="filter-row">
+          <div class="field">
+            <label for="subject-filter">Materia</label>
             <select id="subject-filter">
-              <option value="">
-                全部科目
-              </option>
+              <option value="">Tutte le materie</option>
             </select>
-          </label>
-
-
-          <div class="field field-action">
-            <span>&nbsp;</span>
-
-            <button
-              id="clear-filters"
-              class="secondary-button"
-              type="button"
-            >
-              重置
-            </button>
           </div>
 
+          <div class="actions">
+            <button id="reset-filters" class="ghost-button" type="button">
+              Ripristina
+            </button>
+          </div>
         </div>
 
+        <div class="date-strip-head">
+          <span>Giorni</span>
+          <span id="range-caption">Da oggi in poi</span>
+        </div>
+
+        <div id="date-chips" class="date-chips" aria-label="Selezione data"></div>
       </section>
 
-
-      <div class="result-bar">
-
-        <span id="result-count">
-          0 项作业
-        </span>
-
-        <span id="updated-at">
-          —
-        </span>
-
+      <div class="meta-row">
+        <span id="result-count">0 compiti</span>
+        <span id="updated-label">Nessun compito pubblicato</span>
       </div>
 
+      <section id="homework-list" class="homework-list"></section>
 
-      <div
-        id="homework-list"
-        class="homework-list"
-      ></div>
-
-
-      <section
-        id="empty-state"
-        class="empty-state"
-        hidden
-      >
-        <div class="empty-icon">✓</div>
-
-        <h2>这里暂时没有作业</h2>
-
+      <section id="empty-state" class="empty-state">
+        <div class="empty-eyebrow">VUOTO</div>
+        <h2>Nessun compito al momento</h2>
         <p>
-          可以换一个日期或科目看看。
+          Quando aggiungerai nuovi compiti in <code>homework.js</code>,
+          appariranno qui automaticamente.
         </p>
       </section>
-
     </main>
 
-
-    <footer>
+    <footer class="site-footer">
       <span>U22 Homework</span>
-      <span>仅记录作业内容</span>
+      <span>Static site · GitHub Pages</span>
     </footer>
-
   </div>
-
 
   <script src="./homework.js"></script>
   <script src="./app.js"></script>
