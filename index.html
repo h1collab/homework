@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+  <meta name="theme-color" content="#f7f7f5">
+
+  <title>U22 作业</title>
+
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <div class="page-shell">
+
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="U22 作业首页">
+        <span class="brand-mark">U</span>
+
+        <span class="brand-text">
+          <strong>U22 作业</strong>
+          <small>Homework</small>
+        </span>
+      </a>
+
+      <button
+        id="theme-toggle"
+        class="icon-button"
+        type="button"
+        aria-label="切换深浅色"
+      >
+        ☾
+      </button>
+    </header>
+
+    <main>
+
+      <section class="hero">
+        <p class="eyebrow">U22 · HOMEWORK</p>
+
+        <h1>今天之后的作业</h1>
+
+        <p class="hero-description">
+          查看近期作业，也可以按照日期和科目筛选。
+        </p>
+      </section>
+
+
+      <section class="filter-panel">
+
+        <div class="filter-grid">
+
+          <label class="field">
+            <span>日期范围</span>
+
+            <select id="range-filter">
+              <option value="future" selected>
+                从今天开始
+              </option>
+
+              <option value="date">
+                指定日期
+              </option>
+
+              <option value="all">
+                全部日期
+              </option>
+            </select>
+          </label>
+
+
+          <label
+            id="date-wrap"
+            class="field"
+            hidden
+          >
+            <span>选择日期</span>
+
+            <input
+              id="date-filter"
+              type="date"
+            >
+          </label>
+
+
+          <label class="field">
+            <span>科目</span>
+
+            <select id="subject-filter">
+              <option value="">
+                全部科目
+              </option>
+            </select>
+          </label>
+
+
+          <div class="field field-action">
+            <span>&nbsp;</span>
+
+            <button
+              id="clear-filters"
+              class="secondary-button"
+              type="button"
+            >
+              重置
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <div class="result-bar">
+
+        <span id="result-count">
+          0 项作业
+        </span>
+
+        <span id="updated-at">
+          —
+        </span>
+
+      </div>
+
+
+      <div
+        id="homework-list"
+        class="homework-list"
+      ></div>
+
+
+      <section
+        id="empty-state"
+        class="empty-state"
+        hidden
+      >
+        <div class="empty-icon">✓</div>
+
+        <h2>这里暂时没有作业</h2>
+
+        <p>
+          可以换一个日期或科目看看。
+        </p>
+      </section>
+
+    </main>
+
+
+    <footer>
+      <span>U22 Homework</span>
+      <span>仅记录作业内容</span>
+    </footer>
+
+  </div>
+
+
+  <script src="./homework.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
