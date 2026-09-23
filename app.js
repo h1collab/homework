@@ -3,57 +3,10 @@ const HOMEWORK =
     ? window.HOMEWORK_DATA.slice()
     : [];
 
-
-const state = {
-  subject: "",
-  selectedDate: null,
-  weekOffset: 0
-};
-
-
-const els = {
-  subjectSelect:
-    document.querySelector("#subject-select"),
-
-  subjectTrigger:
-    document.querySelector("#subject-trigger"),
-
-  subjectValue:
-    document.querySelector("#subject-value"),
-
-  subjectMenu:
-    document.querySelector("#subject-menu"),
-
-  dateStrip:
-    document.querySelector("#date-strip"),
-
-  monthTitle:
-    document.querySelector("#month-title"),
-
-  datePrev:
-    document.querySelector("#date-prev"),
-
-  dateNext:
-    document.querySelector("#date-next"),
-
-  reset:
-    document.querySelector("#reset-filters"),
-
-  viewCaption:
-    document.querySelector("#view-caption"),
-
-  list:
-    document.querySelector("#homework-list"),
-
-  empty:
-    document.querySelector("#empty-state"),
-
-  count:
-    document.querySelector("#result-count"),
-
-  updated:
-    document.querySelector("#updated-label")
-};
+const NOTICES =
+  Array.isArray(window.NOTICE_DATA)
+    ? window.NOTICE_DATA.slice()
+    : [];
 
 
 function pad(value) {
@@ -62,11 +15,7 @@ function pad(value) {
 
 
 function toIsoDate(date) {
-  return [
-    date.getFullYear(),
-    pad(date.getMonth() + 1),
-    pad(date.getDate())
-  ].join("-");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
 
@@ -104,23 +53,77 @@ function addDays(date, amount) {
 }
 
 
+function escapeHtml(value = "") {
+  return String(value).replace(
+    /[&<>'"]/g,
+    char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "'": "&#39;",
+      '"': "&quot;"
+    })[char]
+  );
+}
+
+
 const TODAY = startOfToday();
 const TODAY_ISO = toIsoDate(TODAY);
 
 
-function escapeHtml(value = "") {
-  return String(value)
-    .replace(
-      /[&<>'"]/g,
-      char => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        "'": "&#39;",
-        '"': "&quot;"
-      })[char]
-    );
-}
+const state = {
+  subject: "",
+  selectedDate: TODAY_ISO,
+  weekOffset: 0
+};
+
+
+const els = {
+  subjectSelect:
+    document.querySelector("#subject-select"),
+
+  subjectTrigger:
+    document.querySelector("#subject-trigger"),
+
+  subjectValue:
+    document.querySelector("#subject-value"),
+
+  subjectMenu:
+    document.querySelector("#subject-menu"),
+
+  dateStrip:
+    document.querySelector("#date-strip"),
+
+  monthTitle:
+    document.querySelector("#month-title"),
+
+  datePrev:
+    document.querySelector("#date-prev"),
+
+  dateNext:
+    document.querySelector("#date-next"),
+
+  reset:
+    document.querySelector("#reset-filters"),
+
+  viewCaption:
+    document.querySelector("#view-caption"),
+
+  notices:
+    document.querySelector("#notice-area"),
+
+  list:
+    document.querySelector("#homework-list"),
+
+  empty:
+    document.querySelector("#empty-state"),
+
+  count:
+    document.querySelector("#result-count"),
+
+  updated:
+    document.querySelector("#updated-label")
+};
 
 
 function formatMonth(date) {
@@ -137,9 +140,7 @@ function formatMonth(date) {
 function formatWeekday(date) {
   return new Intl.DateTimeFormat(
     "it-IT",
-    {
-      weekday: "short"
-    }
+    { weekday: "short" }
   )
     .format(date)
     .replace(".", "")
@@ -165,21 +166,21 @@ function relativeLabel(value) {
   const date =
     parseIsoDate(value);
 
-  const diff =
+  const difference =
     Math.round(
       (date - TODAY) / 86400000
     );
 
-  if (diff === 0) {
+  if (difference === 0) {
     return "OGGI";
   }
 
-  if (diff === 1) {
+  if (difference === 1) {
     return "DOMANI";
   }
 
-  if (diff === 2) {
-    return "DOPO DOMANI";
+  if (difference === 2) {
+    return "DOPODOMANI";
   }
 
   return "GIORNO";
@@ -204,9 +205,7 @@ function getSubjects() {
 
 
 function buildSubjectMenu() {
-
-  const subjects =
-    getSubjects();
+  const subjects = getSubjects();
 
   const values = [
     "",
@@ -217,21 +216,14 @@ function buildSubjectMenu() {
 
 
   values.forEach(value => {
-
     const button =
-      document.createElement(
-        "button"
-      );
+      document.createElement("button");
 
     button.type = "button";
-
-    button.className =
-      "select-option";
-
+    button.className = "select-option";
 
     const selected =
       state.subject === value;
-
 
     if (selected) {
       button.classList.add(
@@ -239,10 +231,8 @@ function buildSubjectMenu() {
       );
     }
 
-
     const label =
-      value ||
-      "Tutte le materie";
+      value || "Tutte le materie";
 
 
     button.innerHTML = `
@@ -268,18 +258,15 @@ function buildSubjectMenu() {
     button.addEventListener(
       "click",
       () => {
-
         state.subject = value;
 
-        els.subjectValue
-          .textContent = label;
+        els.subjectValue.textContent =
+          label;
 
         closeSubjectMenu();
 
         buildSubjectMenu();
-
         render();
-
       }
     );
 
@@ -287,9 +274,7 @@ function buildSubjectMenu() {
     els.subjectMenu.appendChild(
       button
     );
-
   });
-
 }
 
 
@@ -297,8 +282,7 @@ function openSubjectMenu() {
   els.subjectMenu.hidden = false;
 
   els.subjectTrigger
-    .classList
-    .add("is-open");
+    .classList.add("is-open");
 
   els.subjectTrigger
     .setAttribute(
@@ -312,8 +296,7 @@ function closeSubjectMenu() {
   els.subjectMenu.hidden = true;
 
   els.subjectTrigger
-    .classList
-    .remove("is-open");
+    .classList.remove("is-open");
 
   els.subjectTrigger
     .setAttribute(
@@ -323,82 +306,65 @@ function closeSubjectMenu() {
 }
 
 
-function toggleSubjectMenu() {
-  if (els.subjectMenu.hidden) {
-    openSubjectMenu();
-  } else {
-    closeSubjectMenu();
+els.subjectTrigger.addEventListener(
+  "click",
+  () => {
+    if (els.subjectMenu.hidden) {
+      openSubjectMenu();
+    } else {
+      closeSubjectMenu();
+    }
   }
-}
-
-
-els.subjectTrigger
-  .addEventListener(
-    "click",
-    toggleSubjectMenu
-  );
+);
 
 
 document.addEventListener(
   "click",
   event => {
-
     if (
-      !els.subjectSelect
-        .contains(event.target)
+      !els.subjectSelect.contains(
+        event.target
+      )
     ) {
       closeSubjectMenu();
     }
-
   }
 );
 
 
 function getWeekStart() {
-
   return addDays(
     TODAY,
     state.weekOffset * 7
   );
-
 }
 
 
 function buildDateStrip() {
-
-  const start =
-    getWeekStart();
-
+  const start = getWeekStart();
 
   els.monthTitle.textContent =
     formatMonth(start);
-
 
   els.dateStrip.innerHTML = "";
 
 
   for (
-    let i = 0;
-    i < 7;
-    i += 1
+    let index = 0;
+    index < 7;
+    index += 1
   ) {
-
     const date =
-      addDays(start, i);
+      addDays(start, index);
 
     const iso =
       toIsoDate(date);
 
-
     const button =
-      document.createElement(
-        "button"
-      );
+      document.createElement("button");
 
     button.type = "button";
-
-    button.className =
-      "date-item";
+    button.className = "date-item";
 
 
     if (iso === TODAY_ISO) {
@@ -431,24 +397,10 @@ function buildDateStrip() {
     button.addEventListener(
       "click",
       () => {
-
-        if (
-          state.selectedDate === iso
-        ) {
-
-          state.selectedDate = null;
-
-        } else {
-
-          state.selectedDate = iso;
-
-        }
-
+        state.selectedDate = iso;
 
         buildDateStrip();
-
         render();
-
       }
     );
 
@@ -456,20 +408,15 @@ function buildDateStrip() {
     els.dateStrip.appendChild(
       button
     );
-
   }
-
 }
 
 
 els.datePrev.addEventListener(
   "click",
   () => {
-
     state.weekOffset -= 1;
-
     buildDateStrip();
-
   }
 );
 
@@ -477,103 +424,100 @@ els.datePrev.addEventListener(
 els.dateNext.addEventListener(
   "click",
   () => {
-
     state.weekOffset += 1;
-
     buildDateStrip();
-
   }
 );
 
 
 function getFilteredHomework() {
-
   return HOMEWORK
     .filter(item => {
-
       if (!state.subject) {
         return true;
       }
 
       return (
-        item.subject ===
-        state.subject
+        item.subject === state.subject
       );
-
     })
 
-    .filter(item => {
-
-      if (state.selectedDate) {
-
-        return (
-          item.date ===
-          state.selectedDate
-        );
-
-      }
-
-      return (
-        item.date >=
-        TODAY_ISO
-      );
-
-    })
+    .filter(
+      item =>
+        item.date ===
+        state.selectedDate
+    )
 
     .sort(
-      (a, b) => {
-
-        const dateCompare =
-          a.date.localeCompare(
-            b.date
-          );
-
-        if (dateCompare !== 0) {
-          return dateCompare;
-        }
-
-        return (
-          a.subject.localeCompare(
-            b.subject,
-            "it-IT"
-          )
-        );
-
-      }
+      (a, b) =>
+        a.subject.localeCompare(
+          b.subject,
+          "it-IT"
+        )
     );
-
 }
 
 
-function groupByDate(items) {
-
-  const map =
-    new Map();
-
-
-  items.forEach(item => {
-
-    if (!map.has(item.date)) {
-      map.set(
-        item.date,
-        []
-      );
-    }
+function renderNotices() {
+  const notices =
+    NOTICES.filter(
+      notice =>
+        notice.date ===
+        state.selectedDate
+    );
 
 
-    map
-      .get(item.date)
-      .push(item);
+  if (notices.length === 0) {
+    els.notices.innerHTML = "";
+    els.notices.hidden = true;
+    return;
+  }
 
-  });
+
+  els.notices.hidden = false;
 
 
-  return map;
+  els.notices.innerHTML =
+    notices
+      .map(notice => {
+        const urgent =
+          notice.type === "urgent";
 
+        return `
+          <article class="
+            notice-card
+            ${
+              urgent
+                ? "notice-urgent"
+                : "notice-warning"
+            }
+          ">
+
+            <div class="notice-icon">
+              ${urgent ? "!" : "i"}
+            </div>
+
+            <div class="notice-content">
+
+              <h3 class="notice-title">
+                ${escapeHtml(notice.title)}
+              </h3>
+
+              <p class="notice-text">
+                ${escapeHtml(notice.text)}
+              </p>
+
+            </div>
+
+          </article>
+        `;
+      })
+      .join("");
 }
 
 
 function render() {
+  renderNotices();
 
   const filtered =
     getFilteredHomework();
@@ -587,120 +531,90 @@ function render() {
     }`;
 
 
-  if (state.selectedDate) {
-
-    els.viewCaption.textContent =
-      formatLongDate(
-        state.selectedDate
-      );
-
-  } else {
-
-    els.viewCaption.textContent =
-      "Da oggi in poi";
-
-  }
+  els.viewCaption.textContent =
+    formatLongDate(
+      state.selectedDate
+    );
 
 
-  if (HOMEWORK.length === 0) {
-
-    els.updated.textContent =
-      "Nessun compito pubblicato";
-
-  } else {
-
-    const dates =
-      HOMEWORK
-        .map(item => item.date)
-        .sort();
-
-    els.updated.textContent =
-      `Ultimo aggiornamento: ${
-        dates[dates.length - 1]
-      }`;
-
-  }
+  els.updated.textContent =
+    state.selectedDate === TODAY_ISO
+      ? "Oggi"
+      : formatLongDate(
+          state.selectedDate
+        );
 
 
   if (filtered.length === 0) {
-
     els.list.innerHTML = "";
-
     els.empty.hidden = false;
-
     return;
-
   }
 
 
   els.empty.hidden = true;
 
 
-  const groups =
-    groupByDate(filtered);
+  els.list.innerHTML = `
+    <section class="day-block">
+
+      <div class="day-side">
+
+        <div class="day-badge">
+          ${relativeLabel(
+            state.selectedDate
+          )}
+        </div>
+
+        <h2>
+          ${formatLongDate(
+            state.selectedDate
+          )}
+        </h2>
+
+      </div>
 
 
-  els.list.innerHTML =
-    [...groups.entries()]
-      .map(
-        ([date, items]) => `
+      <div class="cards">
 
-          <section class="day-block">
+        ${filtered
+          .map(item => `
+            <article class="homework-card">
 
-            <div class="day-side">
+              <span class="subject-pill">
+                ${escapeHtml(
+                  item.subject
+                )}
+              </span>
 
-              <div class="day-badge">
-                ${relativeLabel(date)}
-              </div>
+              <h3>
+                ${escapeHtml(
+                  item.title
+                )}
+              </h3>
 
-              <h2>
-                ${formatLongDate(date)}
-              </h2>
+              <p>
+                ${escapeHtml(
+                  item.details
+                )}
+              </p>
 
-            </div>
+            </article>
+          `)
+          .join("")}
 
+      </div>
 
-            <div class="cards">
-
-              ${items.map(
-                item => `
-
-                  <article class="homework-card">
-
-                    <span class="subject-pill">
-                      ${escapeHtml(item.subject)}
-                    </span>
-
-                    <h3>
-                      ${escapeHtml(item.title)}
-                    </h3>
-
-                    <p>
-                      ${escapeHtml(item.details)}
-                    </p>
-
-                  </article>
-
-                `
-              ).join("")}
-
-            </div>
-
-          </section>
-
-        `
-      )
-      .join("");
-
+    </section>
+  `;
 }
 
 
 els.reset.addEventListener(
   "click",
   () => {
-
     state.subject = "";
-    state.selectedDate = null;
+    state.selectedDate = TODAY_ISO;
     state.weekOffset = 0;
 
     els.subjectValue.textContent =
@@ -709,7 +623,6 @@ els.reset.addEventListener(
     buildSubjectMenu();
     buildDateStrip();
     render();
-
   }
 );
 
