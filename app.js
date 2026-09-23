@@ -494,7 +494,7 @@ function renderNotices() {
           ">
 
             <div class="notice-icon">
-              ${urgent ? "!" : "i"}
+              ${urgent ? "!" : "!"}
             </div>
 
             <div class="notice-content">

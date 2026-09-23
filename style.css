@@ -917,3 +917,186 @@ button,
   }
 
 }
+
+
+/* U22_NOTICE_OVERRIDE_START */
+
+/*
+ * Avvisi
+ * warning = giallo
+ * urgent  = rosso
+ */
+
+.notice-area {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  margin: 4px 0 8px;
+}
+
+
+.notice-card {
+  position: relative;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+
+  overflow: hidden;
+
+  padding: 18px 18px 18px 20px;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.025);
+
+  animation: noticeIn 180ms ease-out;
+}
+
+
+.notice-card::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  bottom: 0;
+  left: 0;
+
+  width: 4px;
+}
+
+
+/* ===== GIALLO ===== */
+
+.notice-card.notice-warning {
+  border: 1px solid #eadca2;
+
+  background: #fff8d9;
+
+  color: #28230f;
+}
+
+
+.notice-card.notice-warning::before {
+  background: #d7a514;
+}
+
+
+.notice-card.notice-warning .notice-icon {
+  background: #f3df8f;
+
+  color: #6b5200;
+}
+
+
+.notice-card.notice-warning .notice-title {
+  color: #29230d;
+}
+
+
+.notice-card.notice-warning .notice-text {
+  color: #675f3c;
+}
+
+
+/* ===== ROSSO ===== */
+
+.notice-card.notice-urgent {
+  border: 1px solid #efc7c3;
+
+  background: #fff0ee;
+
+  color: #491915;
+}
+
+
+.notice-card.notice-urgent::before {
+  background: #d92d20;
+}
+
+
+.notice-card.notice-urgent .notice-icon {
+  background: #f5c7c2;
+
+  color: #a51f16;
+}
+
+
+.notice-card.notice-urgent .notice-title {
+  color: #481713;
+}
+
+
+.notice-card.notice-urgent .notice-text {
+  color: #75413c;
+}
+
+
+/* ===== ICON ===== */
+
+.notice-icon {
+  width: 32px;
+  height: 32px;
+
+  flex: 0 0 32px;
+
+  display: grid;
+  place-items: center;
+
+  margin-top: 1px;
+
+  border-radius: 50%;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+
+/* ===== CONTENT ===== */
+
+.notice-content {
+  min-width: 0;
+
+  flex: 1;
+}
+
+
+.notice-title {
+  margin: 0;
+
+  font-size: 14px;
+  line-height: 1.4;
+
+  font-weight: 650;
+
+  letter-spacing: -0.01em;
+}
+
+
+.notice-text {
+  margin: 5px 0 0;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+
+@keyframes noticeIn {
+
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+}
+
+
+/* U22_NOTICE_OVERRIDE_END */
