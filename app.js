@@ -8,6 +8,9 @@ const NOTICES =
     ? window.NOTICE_DATA.slice()
     : [];
 
+const TIMETABLE =
+  window.TIMETABLE_DATA || {};
+
 
 function pad(value) {
   return String(value).padStart(2, "0");
@@ -74,7 +77,8 @@ const TODAY_ISO = toIsoDate(TODAY);
 const state = {
   subject: "",
   selectedDate: TODAY_ISO,
-  weekOffset: 0
+  weekOffset: 0,
+  timetableOpen: false
 };
 
 
@@ -109,6 +113,9 @@ const els = {
   viewCaption:
     document.querySelector("#view-caption"),
 
+  schedule:
+    document.querySelector("#schedule-area"),
+
   notices:
     document.querySelector("#notice-area"),
 
@@ -140,7 +147,9 @@ function formatMonth(date) {
 function formatWeekday(date) {
   return new Intl.DateTimeFormat(
     "it-IT",
-    { weekday: "short" }
+    {
+      weekday: "short"
+    }
   )
     .format(date)
     .replace(".", "")
@@ -187,6 +196,10 @@ function relativeLabel(value) {
 }
 
 
+/* =========================================================
+   MATERIE
+   ========================================================= */
+
 function getSubjects() {
   return [
     ...new Set(
@@ -205,15 +218,12 @@ function getSubjects() {
 
 
 function buildSubjectMenu() {
-  const subjects = getSubjects();
-
   const values = [
     "",
-    ...subjects
+    ...getSubjects()
   ];
 
   els.subjectMenu.innerHTML = "";
-
 
   values.forEach(value => {
     const button =
@@ -222,10 +232,7 @@ function buildSubjectMenu() {
     button.type = "button";
     button.className = "select-option";
 
-    const selected =
-      state.subject === value;
-
-    if (selected) {
+    if (state.subject === value) {
       button.classList.add(
         "is-selected"
       );
@@ -234,14 +241,12 @@ function buildSubjectMenu() {
     const label =
       value || "Tutte le materie";
 
-
     button.innerHTML = `
       <span>${escapeHtml(label)}</span>
 
       <svg
         class="option-check"
         viewBox="0 0 20 20"
-        aria-hidden="true"
       >
         <path
           d="m5 10 3 3 7-7"
@@ -253,7 +258,6 @@ function buildSubjectMenu() {
         />
       </svg>
     `;
-
 
     button.addEventListener(
       "click",
@@ -269,7 +273,6 @@ function buildSubjectMenu() {
         render();
       }
     );
-
 
     els.subjectMenu.appendChild(
       button
@@ -332,6 +335,10 @@ document.addEventListener(
 );
 
 
+/* =========================================================
+   CALENDARIO
+   ========================================================= */
+
 function getWeekStart() {
   return addDays(
     TODAY,
@@ -347,7 +354,6 @@ function buildDateStrip() {
     formatMonth(start);
 
   els.dateStrip.innerHTML = "";
-
 
   for (
     let index = 0;
@@ -366,13 +372,11 @@ function buildDateStrip() {
     button.type = "button";
     button.className = "date-item";
 
-
     if (iso === TODAY_ISO) {
       button.classList.add(
         "is-today"
       );
     }
-
 
     if (
       state.selectedDate === iso
@@ -381,7 +385,6 @@ function buildDateStrip() {
         "is-selected"
       );
     }
-
 
     button.innerHTML = `
       <span class="date-weekday">
@@ -393,7 +396,6 @@ function buildDateStrip() {
       </span>
     `;
 
-
     button.addEventListener(
       "click",
       () => {
@@ -403,7 +405,6 @@ function buildDateStrip() {
         render();
       }
     );
-
 
     els.dateStrip.appendChild(
       button
@@ -430,33 +431,220 @@ els.dateNext.addEventListener(
 );
 
 
-function getFilteredHomework() {
-  return HOMEWORK
-    .filter(item => {
-      if (!state.subject) {
-        return true;
-      }
+/* =========================================================
+   ORARIO / COSA PORTARE
+   ========================================================= */
 
-      return (
-        item.subject === state.subject
-      );
-    })
-
-    .filter(
-      item =>
-        item.date ===
-        state.selectedDate
+function uniqueLessons(lessons) {
+  return [
+    ...new Set(
+      lessons.filter(
+        lesson =>
+          lesson !== "Prolungamento"
+      )
     )
-
-    .sort(
-      (a, b) =>
-        a.subject.localeCompare(
-          b.subject,
-          "it-IT"
-        )
-    );
+  ];
 }
 
+
+function renderSchedule() {
+  if (!els.schedule) {
+    return;
+  }
+
+  const selected =
+    parseIsoDate(
+      state.selectedDate
+    );
+
+  const weekday =
+    selected.getDay();
+
+  const day =
+    TIMETABLE[weekday];
+
+  let currentContent = "";
+
+  if (!day) {
+    currentContent = `
+      <div class="carry-empty">
+        Nessuna lezione prevista.
+      </div>
+    `;
+  } else {
+    const items =
+      uniqueLessons(day.lessons);
+
+    currentContent = `
+      <div class="carry-subjects">
+
+        ${items.map(
+          subject => `
+            <span class="carry-pill">
+              ${escapeHtml(subject)}
+            </span>
+          `
+        ).join("")}
+
+      </div>
+    `;
+  }
+
+
+  const weekHtml =
+    [1, 2, 3, 4, 5]
+      .map(number => {
+        const item =
+          TIMETABLE[number];
+
+        if (!item) {
+          return "";
+        }
+
+        const active =
+          weekday === number
+            ? " is-current"
+            : "";
+
+        return `
+          <article class="timetable-day${active}">
+
+            <div class="timetable-day-name">
+              ${escapeHtml(item.day)}
+            </div>
+
+            <div class="lesson-list">
+
+              ${item.lessons.map(
+                (lesson, index) => `
+                  <div class="lesson-row">
+
+                    <span class="lesson-number">
+                      ${index + 1}
+                    </span>
+
+                    <span class="lesson-name">
+                      ${escapeHtml(lesson)}
+                    </span>
+
+                  </div>
+                `
+              ).join("")}
+
+            </div>
+
+          </article>
+        `;
+      })
+      .join("");
+
+
+  els.schedule.innerHTML = `
+
+    <section class="carry-card">
+
+      <div class="carry-head">
+
+        <div>
+
+          <div class="carry-kicker">
+            ORARIO
+          </div>
+
+          <h2>
+            ${
+              day
+                ? `Cosa portare ${day.day.toLowerCase()}`
+                : "Cosa portare"
+            }
+          </h2>
+
+          <p>
+            ${
+              day
+                ? `${day.lessons.length} ore previste`
+                : "Nessuna lezione prevista per questo giorno."
+            }
+          </p>
+
+        </div>
+
+
+        <button
+          id="timetable-toggle"
+          class="timetable-toggle"
+          type="button"
+        >
+
+          <span>
+            ${
+              state.timetableOpen
+                ? "Nascondi orario"
+                : "Orario settimanale"
+            }
+          </span>
+
+          <svg
+            class="${
+              state.timetableOpen
+                ? "is-open"
+                : ""
+            }"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M5 7.5 10 12.5 15 7.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+        </button>
+
+      </div>
+
+
+      ${currentContent}
+
+
+      <div
+        class="weekly-timetable"
+        ${state.timetableOpen ? "" : "hidden"}
+      >
+
+        ${weekHtml}
+
+      </div>
+
+    </section>
+  `;
+
+
+  const toggle =
+    document.querySelector(
+      "#timetable-toggle"
+    );
+
+  if (toggle) {
+    toggle.addEventListener(
+      "click",
+      () => {
+        state.timetableOpen =
+          !state.timetableOpen;
+
+        renderSchedule();
+      }
+    );
+  }
+}
+
+
+/* =========================================================
+   AVVISI
+   ========================================================= */
 
 function renderNotices() {
   const notices =
@@ -466,16 +654,13 @@ function renderNotices() {
         state.selectedDate
     );
 
-
   if (notices.length === 0) {
     els.notices.innerHTML = "";
     els.notices.hidden = true;
     return;
   }
 
-
   els.notices.hidden = false;
-
 
   els.notices.innerHTML =
     notices
@@ -494,7 +679,7 @@ function renderNotices() {
           ">
 
             <div class="notice-icon">
-              ${urgent ? "!" : "!"}
+              !
             </div>
 
             <div class="notice-content">
@@ -516,12 +701,45 @@ function renderNotices() {
 }
 
 
+/* =========================================================
+   COMPITI
+   ========================================================= */
+
+function getFilteredHomework() {
+  return HOMEWORK
+    .filter(item => {
+      if (!state.subject) {
+        return true;
+      }
+
+      return (
+        item.subject ===
+        state.subject
+      );
+    })
+
+    .filter(
+      item =>
+        item.date ===
+        state.selectedDate
+    )
+
+    .sort(
+      (a, b) =>
+        a.subject.localeCompare(
+          b.subject,
+          "it-IT"
+        )
+    );
+}
+
+
 function render() {
+  renderSchedule();
   renderNotices();
 
   const filtered =
     getFilteredHomework();
-
 
   els.count.textContent =
     `${filtered.length} ${
@@ -530,12 +748,10 @@ function render() {
         : "compiti"
     }`;
 
-
   els.viewCaption.textContent =
     formatLongDate(
       state.selectedDate
     );
-
 
   els.updated.textContent =
     state.selectedDate === TODAY_ISO
@@ -544,16 +760,13 @@ function render() {
           state.selectedDate
         );
 
-
   if (filtered.length === 0) {
     els.list.innerHTML = "";
     els.empty.hidden = false;
     return;
   }
 
-
   els.empty.hidden = true;
-
 
   els.list.innerHTML = `
     <section class="day-block">

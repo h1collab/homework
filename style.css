@@ -1100,3 +1100,303 @@ button,
 
 
 /* U22_NOTICE_OVERRIDE_END */
+
+
+/* U22_TIMETABLE_START */
+
+.schedule-area {
+  margin: 4px 0 14px;
+}
+
+
+.carry-card {
+  padding: 22px;
+
+  border: 1px solid var(--line);
+  border-radius: 24px;
+
+  background: rgba(255, 255, 255, 0.78);
+
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.025),
+    0 8px 28px rgba(0, 0, 0, 0.035);
+}
+
+
+.carry-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+
+.carry-kicker {
+  margin-bottom: 7px;
+
+  color: var(--accent);
+
+  font-size: 11px;
+  font-weight: 750;
+
+  letter-spacing: 0.08em;
+}
+
+
+.carry-head h2 {
+  margin: 0;
+
+  font-size: 21px;
+  font-weight: 630;
+
+  letter-spacing: -0.025em;
+}
+
+
+.carry-head p {
+  margin: 6px 0 0;
+
+  color: var(--muted);
+
+  font-size: 13px;
+}
+
+
+.carry-subjects {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+  margin-top: 20px;
+}
+
+
+.carry-pill {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 34px;
+
+  padding: 6px 12px;
+
+  border: 1px solid var(--line);
+  border-radius: 999px;
+
+  background: var(--surface);
+
+  color: var(--text);
+
+  font-size: 13px;
+  font-weight: 560;
+}
+
+
+.carry-empty {
+  margin-top: 18px;
+
+  color: var(--muted);
+
+  font-size: 14px;
+}
+
+
+.timetable-toggle {
+  flex: 0 0 auto;
+
+  min-height: 38px;
+
+  padding: 0 12px;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  border: 1px solid var(--line);
+  border-radius: 12px;
+
+  background: var(--surface);
+
+  color: var(--text);
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+.timetable-toggle:hover {
+  background: var(--surface-soft);
+}
+
+
+.timetable-toggle svg {
+  width: 16px;
+  height: 16px;
+
+  transition:
+    transform 0.18s ease;
+}
+
+
+.timetable-toggle svg.is-open {
+  transform: rotate(180deg);
+}
+
+
+.weekly-timetable {
+  margin-top: 20px;
+  padding-top: 18px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+
+  gap: 8px;
+
+  border-top: 1px solid var(--line);
+}
+
+
+.timetable-day {
+  min-width: 0;
+
+  padding: 12px;
+
+  border: 1px solid var(--line);
+  border-radius: 16px;
+
+  background: var(--surface);
+}
+
+
+.timetable-day.is-current {
+  border-color:
+    rgba(16, 163, 127, 0.34);
+
+  background:
+    var(--accent-soft);
+}
+
+
+.timetable-day-name {
+  margin-bottom: 11px;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+.lesson-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+
+.lesson-row {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  min-width: 0;
+}
+
+
+.lesson-number {
+  width: 20px;
+  height: 20px;
+
+  flex: 0 0 20px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 7px;
+
+  background: var(--surface-soft);
+
+  color: var(--muted);
+
+  font-size: 10px;
+  font-weight: 650;
+}
+
+
+.timetable-day.is-current
+.lesson-number {
+  background:
+    rgba(16, 163, 127, 0.12);
+
+  color:
+    #08765b;
+}
+
+
+.lesson-name {
+  min-width: 0;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: 11px;
+}
+
+
+@media (max-width: 760px) {
+
+  .carry-card {
+    padding: 18px;
+
+    border-radius: 22px;
+  }
+
+
+  .carry-head {
+    flex-direction: column;
+  }
+
+
+  .timetable-toggle {
+    width: 100%;
+
+    justify-content:
+      space-between;
+  }
+
+
+  .weekly-timetable {
+    grid-template-columns: 1fr;
+  }
+
+
+  .timetable-day {
+    display: grid;
+
+    grid-template-columns:
+      100px minmax(0, 1fr);
+
+    gap: 12px;
+  }
+
+
+  .timetable-day-name {
+    margin: 3px 0 0;
+  }
+
+
+  .lesson-name {
+    font-size: 12px;
+  }
+
+}
+
+/* U22_TIMETABLE_END */
