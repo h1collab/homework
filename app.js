@@ -98,14 +98,9 @@ const state = {
   subject: "",
   selectedDate: TODAY_ISO,
 
-  /*
-   * false:
-   * mostra tutti i compiti da oggi in poi.
-   *
-   * true:
-   * mostra solo il giorno selezionato.
-   */
-  dateFilterActive: false,
+  // "upcoming" = tutti i compiti da oggi in poi.
+  // "date" = solo il giorno scelto.
+  dateMode: "upcoming",
 
   weekOffset: 0,
 
@@ -459,7 +454,14 @@ function buildDateStrip() {
     }
 
     if (
-      state.selectedDate === iso
+      (
+        state.dateMode === "upcoming" &&
+        iso === TODAY_ISO
+      ) ||
+      (
+        state.dateMode === "date" &&
+        state.selectedDate === iso
+      )
     ) {
       button.classList.add(
         "is-selected"
@@ -480,6 +482,7 @@ function buildDateStrip() {
       "click",
       () => {
         state.selectedDate = iso;
+        state.dateMode = "date";
 
         buildDateStrip();
         render();
@@ -1034,11 +1037,19 @@ function getFilteredHomework() {
       );
     })
 
-    .filter(
-      item =>
-        item.date ===
-        state.selectedDate
-    )
+    .filter(item => {
+      if (state.dateMode === "date") {
+        return (
+          item.date ===
+          state.selectedDate
+        );
+      }
+
+      return (
+        item.date >=
+        TODAY_ISO
+      );
+    })
 
     .sort(
       (a, b) =>
@@ -1069,16 +1080,22 @@ function render() {
     }`;
 
   els.viewCaption.textContent =
-    formatLongDate(
-      state.selectedDate
-    );
+    state.dateMode === "date"
+      ? formatLongDate(
+          state.selectedDate
+        )
+      : "Da oggi in poi";
 
   els.updated.textContent =
-    state.selectedDate === TODAY_ISO
-      ? "Oggi"
-      : formatLongDate(
-          state.selectedDate
-        );
+    state.dateMode === "date"
+      ? (
+          state.selectedDate === TODAY_ISO
+            ? "Oggi"
+            : formatLongDate(
+                state.selectedDate
+              )
+        )
+      : "Da oggi in poi";
 
   if (filtered.length === 0) {
     els.list.innerHTML = "";
@@ -1088,60 +1105,69 @@ function render() {
 
   els.empty.hidden = true;
 
-  els.list.innerHTML = `
-    <section class="day-block">
+  const groups = new Map();
 
-      <div class="day-side">
+  filtered.forEach(item => {
+    if (!groups.has(item.date)) {
+      groups.set(item.date, []);
+    }
 
-        <div class="day-badge">
-          ${relativeLabel(
-            state.selectedDate
-          )}
-        </div>
+    groups.get(item.date).push(item);
+  });
 
-        <h2>
-          ${formatLongDate(
-            state.selectedDate
-          )}
-        </h2>
+  els.list.innerHTML =
+    [...groups.entries()]
+      .map(([date, items]) => `
+        <section class="day-block">
 
-      </div>
+          <div class="day-side">
+
+            <div class="day-badge">
+              ${relativeLabel(date)}
+            </div>
+
+            <h2>
+              ${formatLongDate(date)}
+            </h2>
+
+          </div>
 
 
-      <div class="cards">
+          <div class="cards">
 
-        ${filtered.map(
-          item => `
-            <article class="homework-card">
+            ${items.map(
+              item => `
+                <article class="homework-card">
 
-              <span class="subject-pill">
-                ${escapeHtml(
-                  normalizeSubject(
-                    item.subject
-                  )
-                )}
-              </span>
+                  <span class="subject-pill">
+                    ${escapeHtml(
+                      normalizeSubject(
+                        item.subject
+                      )
+                    )}
+                  </span>
 
-              <h3>
-                ${escapeHtml(
-                  item.title
-                )}
-              </h3>
+                  <h3>
+                    ${escapeHtml(
+                      item.title
+                    )}
+                  </h3>
 
-              <p>
-                ${escapeHtml(
-                  item.details
-                )}
-              </p>
+                  <p>
+                    ${escapeHtml(
+                      item.details
+                    )}
+                  </p>
 
-            </article>
-          `
-        ).join("")}
+                </article>
+              `
+            ).join("")}
 
-      </div>
+          </div>
 
-    </section>
-  `;
+        </section>
+      `)
+      .join("");
 }
 
 
@@ -1155,6 +1181,7 @@ els.reset.addEventListener(
     state.subject = "";
     state.selectedDate =
       TODAY_ISO;
+    state.dateMode = "upcoming";
     state.weekOffset = 0;
 
     els.subjectValue.textContent =
