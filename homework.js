@@ -40,44 +40,4 @@ window.HOMEWORK_DATA = [
 ];
 
 
-window.NOTICE_DATA = [
-
-  /* =========================
-     OGGI — PROMEMORIA PER DOMANI
-     23/09
-     ========================= */
-
-  {
-    date: "2026-09-23",
-    type: "warning",
-    title: "Domani — Italiano",
-    text: "Durante la prima ora è prevista un'attività di comprensione orale."
-  },
-
-  {
-    date: "2026-09-23",
-    type: "warning",
-    title: "Domani — Inglese",
-    text: "È prevista una verifica di Inglese."
-  },
-
-
-  /* =========================
-     24/09 — AVVISI DEL GIORNO
-     ========================= */
-
-  {
-    date: "2026-09-24",
-    type: "warning",
-    title: "Italiano — Comprensione orale",
-    text: "Durante la prima ora è prevista un'attività di comprensione orale."
-  },
-
-  {
-    date: "2026-09-24",
-    type: "warning",
-    title: "Inglese — Verifica",
-    text: "Oggi è prevista una verifica di Inglese."
-  }
-
-];
+window.NOTICE_DATA = [];
