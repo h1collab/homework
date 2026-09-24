@@ -36,8 +36,52 @@ window.HOMEWORK_DATA = [
     title: "Lettura",
     details: "Scegliere un libro a piacere e individuare 15 righe particolarmente apprezzate."
   }
+,
+
+  /* =========================
+     1 OTTOBRE
+     ========================= */
+
+  {
+    date: "2026-10-01",
+    subject: "Arte",
+    title: "Studio",
+    details: "Studiare le pagine 158 e 159."
+  }
 
 ];
 
 
-window.NOTICE_DATA = [];
+window.NOTICE_DATA = [
+
+  {
+    date: "2026-09-23",
+    type: "warning",
+    title: "Domani — Italiano",
+    text: "Durante la prima ora è prevista un'attività di comprensione orale."
+  },
+
+  {
+    date: "2026-09-23",
+    type: "warning",
+    title: "Domani — Inglese",
+    text: "È prevista una verifica di Inglese."
+  },
+
+  {
+    date: "2026-09-24",
+    type: "warning",
+    completed: true,
+    title: "Italiano — Comprensione orale",
+    text: "Attività di comprensione orale svolta durante la prima ora."
+  },
+
+  {
+    date: "2026-09-24",
+    type: "warning",
+    completed: true,
+    title: "Inglese — Verifica",
+    text: "Verifica di Inglese conclusa."
+  }
+
+];
