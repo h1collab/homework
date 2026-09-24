@@ -974,31 +974,50 @@ function renderNotices() {
   els.notices.innerHTML =
     notices
       .map(notice => {
+        const completed =
+          notice.completed === true ||
+          notice.date < TODAY_ISO;
+
         const urgent =
-          notice.type ===
-          "urgent";
+          notice.type === "urgent";
+
+        const noticeClass =
+          completed
+            ? "notice-past"
+            : (
+                urgent
+                  ? "notice-urgent"
+                  : "notice-warning"
+              );
 
         return `
-          <article class="
-            notice-card
-            ${
-              urgent
-                ? "notice-urgent"
-                : "notice-warning"
-            }
-          ">
+          <article class="notice-card ${noticeClass}">
 
             <div class="notice-icon">
-              !
+              ${completed ? "✓" : "!"}
             </div>
 
             <div class="notice-content">
 
-              <h3 class="notice-title">
-                ${escapeHtml(
-                  notice.title
-                )}
-              </h3>
+              <div class="notice-heading">
+
+                <h3 class="notice-title">
+                  ${escapeHtml(
+                    notice.title
+                  )}
+                </h3>
+
+                ${
+                  completed
+                    ? `
+                      <span class="notice-status">
+                        Concluso
+                      </span>
+                    `
+                    : ""
+                }
+
+              </div>
 
               <p class="notice-text">
                 ${escapeHtml(
@@ -1052,15 +1071,25 @@ function getFilteredHomework() {
     })
 
     .sort(
-      (a, b) =>
-        normalizeSubject(
+      (a, b) => {
+        const dateCompare =
+          a.date.localeCompare(
+            b.date
+          );
+
+        if (dateCompare !== 0) {
+          return dateCompare;
+        }
+
+        return normalizeSubject(
           a.subject
         ).localeCompare(
           normalizeSubject(
             b.subject
           ),
           "it-IT"
-        )
+        );
+      }
     );
 }
 
@@ -1095,7 +1124,7 @@ function render() {
                 state.selectedDate
               )
         )
-      : "Da oggi in poi";
+      : "Prossimi compiti";
 
   if (filtered.length === 0) {
     els.list.innerHTML = "";
@@ -1105,59 +1134,83 @@ function render() {
 
   els.empty.hidden = true;
 
-  const groups = new Map();
+  const groups =
+    new Map();
 
   filtered.forEach(item => {
     if (!groups.has(item.date)) {
-      groups.set(item.date, []);
+      groups.set(
+        item.date,
+        []
+      );
     }
 
-    groups.get(item.date).push(item);
+    groups
+      .get(item.date)
+      .push(item);
   });
 
   els.list.innerHTML =
     [...groups.entries()]
       .map(([date, items]) => `
-        <section class="day-block">
+        <section class="homework-day">
 
-          <div class="day-side">
+          <header class="homework-day-header">
 
-            <div class="day-badge">
-              ${relativeLabel(date)}
+            <div>
+              <div class="homework-day-kicker">
+                ${relativeLabel(date)}
+              </div>
+
+              <h2>
+                ${formatLongDate(date)}
+              </h2>
             </div>
 
-            <h2>
-              ${formatLongDate(date)}
-            </h2>
+            <span class="homework-day-count">
+              ${items.length}
+              ${items.length === 1 ? "compito" : "compiti"}
+            </span>
 
-          </div>
+          </header>
 
-
-          <div class="cards">
+          <div class="homework-items">
 
             ${items.map(
-              item => `
-                <article class="homework-card">
+              (item, index) => `
+                <article class="homework-item">
 
-                  <span class="subject-pill">
-                    ${escapeHtml(
-                      normalizeSubject(
-                        item.subject
-                      )
-                    )}
-                  </span>
+                  <div class="homework-item-number">
+                    ${index + 1}
+                  </div>
 
-                  <h3>
-                    ${escapeHtml(
-                      item.title
-                    )}
-                  </h3>
+                  <div class="homework-item-content">
 
-                  <p>
-                    ${escapeHtml(
-                      item.details
-                    )}
-                  </p>
+                    <div class="homework-item-top">
+
+                      <span class="homework-subject">
+                        ${escapeHtml(
+                          normalizeSubject(
+                            item.subject
+                          )
+                        )}
+                      </span>
+
+                      <h3>
+                        ${escapeHtml(
+                          item.title
+                        )}
+                      </h3>
+
+                    </div>
+
+                    <p>
+                      ${escapeHtml(
+                        item.details
+                      )}
+                    </p>
+
+                  </div>
 
                 </article>
               `
