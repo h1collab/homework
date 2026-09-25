@@ -40,8 +40,8 @@ window.HOMEWORK_DATA = [
   {
     date: "2026-09-25",
     subject: "Storia",
-    title: "Ripasso - Test d'ingresso",
-    details: "Ripassare il materiale sul Medioevo per il test d'ingresso.",
+    title: "Recupero - Test d'ingresso",
+    details: "Solo per gli assenti: ripassare il materiale sul Medioevo in vista del recupero del test d'ingresso.",
     href: "./ripassare-storia.html",
     actionLabel: "Apri il ripasso"
   }
@@ -103,8 +103,9 @@ window.NOTICE_DATA = [
   {
     date: "2026-09-25",
     type: "warning",
+    completed: true,
     title: "Storia — Test d'ingresso",
-    text: "Oggi è previsto il test d'ingresso di Storia."
+    text: "Test d'ingresso concluso. Gli assenti dovranno recuperarlo."
   }
 
 ];
