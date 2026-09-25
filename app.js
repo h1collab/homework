@@ -1210,6 +1210,23 @@ function render() {
                       )}
                     </p>
 
+                    ${
+                      item.href
+                        ? `
+                          <a
+                            class="homework-action"
+                            href="${escapeHtml(item.href)}"
+                          >
+                            ${escapeHtml(
+                              item.actionLabel ||
+                              "Apri"
+                            )}
+                            <span aria-hidden="true">→</span>
+                          </a>
+                        `
+                        : ""
+                    }
+
                   </div>
 
                 </article>
