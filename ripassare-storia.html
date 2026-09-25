@@ -1,0 +1,1384 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <meta name="theme-color" content="#f7f7f4">
+
+  <title>Ripasso Storia — Test d'ingresso</title>
+
+  <style>
+    :root {
+      --bg: #f7f7f4;
+      --surface: #ffffff;
+      --surface-soft: #efefeb;
+      --text: #111111;
+      --muted: #6f6f69;
+      --line: #deded8;
+      --accent: #10a37f;
+      --accent-soft: #e7f5f0;
+      --warning: #fff8d9;
+      --warning-line: #eadca2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+
+      background: var(--bg);
+      color: var(--text);
+
+      font-family:
+        Inter,
+        ui-sans-serif,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .page {
+      width: min(920px, calc(100% - 28px));
+      margin: 0 auto;
+
+      padding-bottom: 84px;
+    }
+
+    .topbar {
+      min-height: 68px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 16px;
+
+      border-bottom: 1px solid var(--line);
+    }
+
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      color: var(--muted);
+
+      font-size: 13px;
+      font-weight: 650;
+
+      text-decoration: none;
+    }
+
+    .badge {
+      padding: 6px 10px;
+
+      border: 1px solid var(--line);
+      border-radius: 999px;
+
+      background: rgba(255,255,255,.72);
+      color: var(--muted);
+
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .hero {
+      padding: 58px 4px 34px;
+    }
+
+    .eyebrow {
+      margin-bottom: 13px;
+
+      color: var(--accent);
+
+      font-size: 11px;
+      font-weight: 800;
+
+      letter-spacing: .08em;
+    }
+
+    h1 {
+      max-width: 800px;
+
+      margin: 0;
+
+      font-size: clamp(40px, 8vw, 68px);
+      line-height: .98;
+
+      font-weight: 640;
+
+      letter-spacing: -.05em;
+    }
+
+    .hero p {
+      max-width: 700px;
+
+      margin: 22px 0 0;
+
+      color: var(--muted);
+
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    .test-banner {
+      margin: 0 0 18px;
+
+      padding: 18px 20px;
+
+      border: 1px solid var(--warning-line);
+      border-radius: 18px;
+
+      background: var(--warning);
+    }
+
+    .test-banner strong {
+      display: block;
+
+      margin-bottom: 4px;
+
+      font-size: 14px;
+    }
+
+    .test-banner span {
+      color: #675f3c;
+
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .quick-nav {
+      position: sticky;
+      top: 10px;
+
+      z-index: 5;
+
+      margin: 0 0 20px;
+      padding: 8px;
+
+      display: flex;
+
+      gap: 7px;
+
+      overflow-x: auto;
+
+      border: 1px solid var(--line);
+      border-radius: 16px;
+
+      background: rgba(247,247,244,.92);
+
+      backdrop-filter: blur(16px);
+    }
+
+    .quick-nav a {
+      flex: 0 0 auto;
+
+      padding: 8px 11px;
+
+      border-radius: 10px;
+
+      background: var(--surface);
+      color: var(--muted);
+
+      font-size: 11px;
+      font-weight: 700;
+
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .section {
+      margin-top: 18px;
+      padding: 24px;
+
+      border: 1px solid var(--line);
+      border-radius: 24px;
+
+      background: var(--surface);
+    }
+
+    .section-kicker {
+      margin-bottom: 7px;
+
+      color: var(--accent);
+
+      font-size: 10px;
+      font-weight: 800;
+
+      letter-spacing: .08em;
+    }
+
+    .section h2 {
+      margin: 0 0 16px;
+
+      font-size: 24px;
+      line-height: 1.12;
+
+      letter-spacing: -.03em;
+    }
+
+    .section h3 {
+      margin: 22px 0 8px;
+
+      font-size: 16px;
+    }
+
+    .section p,
+    .section li {
+      color: #555550;
+
+      font-size: 14px;
+      line-height: 1.68;
+    }
+
+    .section ul {
+      margin: 10px 0 0;
+      padding-left: 20px;
+    }
+
+    .grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+      gap: 10px;
+
+      margin-top: 14px;
+    }
+
+    .card {
+      padding: 16px;
+
+      border: 1px solid var(--line);
+      border-radius: 16px;
+
+      background: #fafaf8;
+    }
+
+    .card strong {
+      display: block;
+
+      margin-bottom: 6px;
+
+      font-size: 13px;
+    }
+
+    .card p {
+      margin: 0;
+
+      font-size: 13px;
+    }
+
+    .timeline {
+      display: grid;
+
+      gap: 8px;
+
+      margin-top: 14px;
+    }
+
+    .timeline-row {
+      display: grid;
+
+      grid-template-columns:
+        82px minmax(0, 1fr);
+
+      gap: 14px;
+
+      align-items: start;
+
+      padding: 12px 0;
+
+      border-top: 1px solid var(--line);
+    }
+
+    .timeline-row:first-child {
+      border-top: 0;
+    }
+
+    .year {
+      color: var(--accent);
+
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .timeline-row p {
+      margin: 0;
+    }
+
+    .roman {
+      display: grid;
+
+      grid-template-columns:
+        repeat(7, 1fr);
+
+      gap: 7px;
+
+      margin-top: 14px;
+    }
+
+    .roman div {
+      padding: 13px 6px;
+
+      text-align: center;
+
+      border: 1px solid var(--line);
+      border-radius: 12px;
+
+      background: #fafaf8;
+
+      font-size: 12px;
+    }
+
+    .roman b {
+      display: block;
+
+      margin-bottom: 4px;
+
+      font-size: 16px;
+    }
+
+    .focus {
+      margin-top: 16px;
+      padding: 16px;
+
+      border-radius: 16px;
+
+      background: var(--accent-soft);
+    }
+
+    .focus strong {
+      display: block;
+
+      margin-bottom: 5px;
+
+      color: #08765b;
+
+      font-size: 12px;
+    }
+
+    .focus p {
+      margin: 0;
+
+      color: #365f54;
+
+      font-size: 13px;
+    }
+
+    .quiz details {
+      padding: 15px 0;
+
+      border-top: 1px solid var(--line);
+    }
+
+    .quiz details:first-of-type {
+      border-top: 0;
+    }
+
+    .quiz summary {
+      cursor: pointer;
+
+      font-size: 14px;
+      font-weight: 650;
+      line-height: 1.5;
+    }
+
+    .answer {
+      margin-top: 10px;
+      padding: 12px 14px;
+
+      border-radius: 12px;
+
+      background: var(--accent-soft);
+      color: #365f54;
+
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .study-box {
+      margin-top: 18px;
+      padding: 18px;
+
+      border-radius: 18px;
+
+      background: #111111;
+      color: white;
+    }
+
+    .study-box h3 {
+      margin: 0 0 9px;
+
+      font-size: 17px;
+    }
+
+    .study-box ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .study-box li {
+      color: rgba(255,255,255,.75);
+    }
+
+    .source-note {
+      margin-top: 22px;
+
+      color: var(--muted);
+
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 650px) {
+      .hero {
+        padding-top: 42px;
+      }
+
+      .section {
+        padding: 18px;
+
+        border-radius: 20px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .roman {
+        grid-template-columns:
+          repeat(4, 1fr);
+      }
+
+      .timeline-row {
+        grid-template-columns:
+          70px minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page">
+
+    <header class="topbar">
+
+      <a
+        class="back"
+        href="./"
+      >
+        ← Compiti
+      </a>
+
+      <span class="badge">
+        STORIA
+      </span>
+
+    </header>
+
+
+    <main>
+
+      <section class="hero">
+
+        <div class="eyebrow">
+          RIPASSO · TEST D'INGRESSO
+        </div>
+
+        <h1>
+          Dal crollo di Roma
+          al Rinascimento.
+        </h1>
+
+        <p>
+          Ripasso costruito sul materiale
+          “Dalle invasioni al rinascimento:
+          un viaggio nel medioevo”.
+          Concentrati soprattutto su date,
+          personaggi, cause, conseguenze e
+          collegamenti tra gli eventi.
+        </p>
+
+      </section>
+
+
+      <div class="test-banner">
+
+        <strong>
+          Test d'ingresso di Storia
+        </strong>
+
+        <span>
+          Ripassa prima la cronologia,
+          poi i quattro capitoli e chiudi
+          con le domande di autoverifica.
+        </span>
+
+      </div>
+
+
+      <nav
+        class="quick-nav"
+        aria-label="Indice rapido"
+      >
+        <a href="#date">Date</a>
+        <a href="#romani">Numeri romani</a>
+        <a href="#cap1">Capitolo 1</a>
+        <a href="#cap2">Capitolo 2</a>
+        <a href="#cap3">Capitolo 3</a>
+        <a href="#cap4">Capitolo 4</a>
+        <a href="#quiz">Quiz</a>
+      </nav>
+
+
+      <section
+        class="section"
+        id="date"
+      >
+
+        <div class="section-kicker">
+          PRIMA COSA DA SAPERE
+        </div>
+
+        <h2>
+          Le date chiave
+        </h2>
+
+        <div class="timeline">
+
+          <div class="timeline-row">
+            <div class="year">476</div>
+            <p>
+              Caduta dell'Impero Romano
+              d'Occidente.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">568</div>
+            <p>
+              Arrivo dei Longobardi di Alboino;
+              capitale del regno a Pavia.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">732</div>
+            <p>
+              Battaglia di Poitiers con
+              Carlo Martello.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">774</div>
+            <p>
+              Carlo Magno sconfigge Desiderio
+              e diventa re dei Longobardi.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">800</div>
+            <p>
+              Carlo Magno viene incoronato
+              imperatore da Papa Leone III.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">843</div>
+            <p>
+              Trattato di Verdun e divisione
+              dell'impero carolingio.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">962</div>
+            <p>
+              Nel materiale: Ottone I rifonda
+              il Sacro Romano Impero Germanico;
+              gli Ungari vengono collegati alla
+              battaglia di Lechfeld.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">1096</div>
+            <p>
+              Inizio della Prima Crociata.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">1122</div>
+            <p>
+              Concordato di Worms:
+              equilibrio tra Papato e Impero
+              nella lotta per le investiture.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">1176</div>
+            <p>
+              Federico Barbarossa viene
+              sconfitto a Legnano.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">1183</div>
+            <p>
+              Pace di Costanza e
+              riconoscimento dell'autonomia
+              dei comuni.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">1215</div>
+            <p>
+              Magna Charta in Inghilterra.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">1315</div>
+            <p>
+              Grandi carestie in Europa.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">1347</div>
+            <p>
+              Arrivo della Peste Nera.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">1337–1453</div>
+            <p>
+              Guerra dei Cent'Anni.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">1415</div>
+            <p>
+              Vittoria inglese ad Azincourt.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">1429</div>
+            <p>
+              Giovanna d'Arco libera Orléans.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">1431</div>
+            <p>
+              Giovanna d'Arco viene processata
+              e bruciata a Rouen.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">1454</div>
+            <p>
+              Pace di Lodi.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">1469</div>
+            <p>
+              Matrimonio tra Isabella di Castiglia
+              e Ferdinando d'Aragona.
+            </p>
+          </div>
+
+          <div class="timeline-row">
+            <div class="year">1492</div>
+            <p>
+              Il percorso del materiale conduce
+              verso una nuova era.
+            </p>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section
+        class="section"
+        id="romani"
+      >
+
+        <div class="section-kicker">
+          NUMERI ROMANI
+        </div>
+
+        <h2>
+          Leggere anni e secoli
+        </h2>
+
+        <div class="roman">
+          <div><b>I</b>1</div>
+          <div><b>V</b>5</div>
+          <div><b>X</b>10</div>
+          <div><b>L</b>50</div>
+          <div><b>C</b>100</div>
+          <div><b>D</b>500</div>
+          <div><b>M</b>1000</div>
+        </div>
+
+        <div class="grid">
+
+          <div class="card">
+            <strong>Addizione</strong>
+            <p>
+              Se il simbolo minore segue
+              quello maggiore, si somma.
+              VIII = 8.
+            </p>
+          </div>
+
+          <div class="card">
+            <strong>Sottrazione</strong>
+            <p>
+              Se il simbolo minore precede
+              quello maggiore, si sottrae.
+              IX = 9.
+            </p>
+          </div>
+
+          <div class="card">
+            <strong>Ripetizione</strong>
+            <p>
+              Un simbolo può essere ripetuto
+              al massimo tre volte di fila.
+            </p>
+          </div>
+
+          <div class="card">
+            <strong>Secoli</strong>
+            <p>
+              IX: 801–900 · X: 901–1000 ·
+              XI: 1001–1100 · XII: 1101–1200 ·
+              XIII: 1201–1300 · XIV: 1301–1400 ·
+              XV: 1401–1500.
+            </p>
+          </div>
+
+        </div>
+
+        <h3>
+          Esempi presenti nel materiale
+        </h3>
+
+        <p>
+          MLXVI = 1066 · MXCVI = 1096 ·
+          MCCXV = 1215 · MCCCXLVIII = 1348 ·
+          MCDXCII = 1492.
+        </p>
+
+      </section>
+
+
+      <section
+        class="section"
+        id="cap1"
+      >
+
+        <div class="section-kicker">
+          CAPITOLO 1
+        </div>
+
+        <h2>
+          L'eredità di Roma e Carlo Magno
+        </h2>
+
+        <div class="grid">
+
+          <div class="card">
+            <strong>Dopo Roma</strong>
+            <p>
+              Caduta dell'Impero Romano
+              d'Occidente, regni romano-barbarici,
+              Longobardi in Italia e divisione tra
+              aree bizantine e barbariche.
+            </p>
+          </div>
+
+          <div class="card">
+            <strong>I Franchi</strong>
+            <p>
+              Pipino, Carlo Martello,
+              Pipino il Breve e Carlo Magno.
+              Nell'800 Carlo Magno viene
+              incoronato imperatore.
+            </p>
+          </div>
+
+          <div class="card">
+            <strong>Feudalesimo</strong>
+            <p>
+              Patto tra signore e vassallo:
+              feudo in cambio di fedeltà,
+              servizio militare e
+              auxilium et consilium.
+            </p>
+          </div>
+
+          <div class="card">
+            <strong>Tre ordini</strong>
+            <p>
+              Oratores: clero.
+              Bellatores: guerrieri.
+              Laboratores: contadini.
+            </p>
+          </div>
+
+        </div>
+
+        <h3>
+          Frantumazione e seconde invasioni
+        </h3>
+
+        <ul>
+          <li>
+            Verdun 843, signori locali
+            e incastellamento.
+          </li>
+          <li>
+            Vichinghi/Normanni:
+            Scandinavia, drakkar,
+            Normandia, Inghilterra,
+            parti della Russia e nuove rotte.
+          </li>
+          <li>
+            Saraceni:
+            Mediterraneo, coste italiane
+            e francesi, presenza in Sicilia.
+          </li>
+          <li>
+            Ungari/Magiari:
+            incursioni nell'Europa centrale
+            e orientale.
+          </li>
+        </ul>
+
+        <h3>
+          Gli Ottoni e le investiture
+        </h3>
+
+        <p>
+          Ottone I riporta l'autorità imperiale
+          in Italia. I vescovi-conti uniscono
+          potere spirituale e temporale.
+          La lotta per le investiture riguarda
+          il diritto di nominare i vescovi
+          e si conclude nel materiale con
+          il Concordato di Worms del 1122.
+        </p>
+
+      </section>
+
+
+      <section
+        class="section"
+        id="cap2"
+      >
+
+        <div class="section-kicker">
+          CAPITOLO 2
+        </div>
+
+        <h2>
+          La rinascita dell'anno Mille
+        </h2>
+
+        <div class="grid">
+
+          <div class="card">
+            <strong>Agricoltura</strong>
+            <p>
+              Clima favorevole, aratro pesante,
+              rotazione triennale e mulini ad acqua
+              aumentano la produttività.
+            </p>
+          </div>
+
+          <div class="card">
+            <strong>Popolazione e città</strong>
+            <p>
+              Crescono villaggi e città.
+              Le eccedenze alimentano mercati
+              e fiere; emerge la borghesia.
+            </p>
+          </div>
+
+          <div class="card">
+            <strong>Borghesia</strong>
+            <p>
+              Mercanti, artigiani nelle corporazioni,
+              banchieri e cambiavalute.
+              Il baratto lascia spazio alla moneta.
+            </p>
+          </div>
+
+          <div class="card">
+            <strong>Repubbliche marinare</strong>
+            <p>
+              Venezia, Genova, Pisa e Amalfi
+              sviluppano commerci,
+              potere navale e autonomia.
+            </p>
+          </div>
+
+        </div>
+
+        <h3>
+          Le Crociate
+        </h3>
+
+        <ul>
+          <li>
+            1096–1291; il materiale ne indica otto.
+          </li>
+          <li>
+            Cause religiose, politiche
+            ed economiche.
+          </li>
+          <li>
+            Prima Crociata 1096–1099:
+            indetta da Papa Urbano II;
+            protagonista Goffredo di Buglione.
+          </li>
+          <li>
+            Terza Crociata 1189–1192:
+            Riccardo Cuor di Leone e Saladino.
+          </li>
+          <li>
+            Conseguenze:
+            più commerci e scambi culturali,
+            declino feudale e rafforzamento
+            delle monarchie.
+          </li>
+        </ul>
+
+        <h3>
+          La nascita dei comuni
+        </h3>
+
+        <p>
+          Le città italiane si organizzano
+          contro feudatari e imperatori.
+          Federico Barbarossa viene sconfitto
+          a Legnano nel 1176; la Pace di Costanza
+          del 1183 riconosce l'autonomia delle città.
+        </p>
+
+      </section>
+
+
+      <section
+        class="section"
+        id="cap3"
+      >
+
+        <div class="section-kicker">
+          CAPITOLO 3
+        </div>
+
+        <h2>
+          Papato e Impero in conflitto
+        </h2>
+
+        <div class="grid">
+
+          <div class="card">
+            <strong>Guelfi e Ghibellini</strong>
+            <p>
+              Le città italiane si dividono
+              tra sostenitori del Papa
+              e sostenitori dell'Imperatore.
+            </p>
+          </div>
+
+          <div class="card">
+            <strong>Federico II</strong>
+            <p>
+              Lo Stupor Mundi immagina
+              un impero mediterraneo
+              laico e multiculturale,
+              in contrasto con Roma.
+            </p>
+          </div>
+
+          <div class="card">
+            <strong>Ordini mendicanti</strong>
+            <p>
+              Francesco d'Assisi e Domenico
+              di Guzmán predicano povertà
+              evangelica e vicinanza al popolo.
+            </p>
+          </div>
+
+          <div class="card">
+            <strong>Monarchie</strong>
+            <p>
+              Francia dei Capetingi;
+              Magna Charta in Inghilterra
+              nel 1215; Normanni nel Sud Italia
+              e nel Regno di Sicilia.
+            </p>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section
+        class="section"
+        id="cap4"
+      >
+
+        <div class="section-kicker">
+          CAPITOLO 4
+        </div>
+
+        <h2>
+          La crisi del Trecento
+          e la fine del Medioevo
+        </h2>
+
+        <div class="grid">
+
+          <div class="card">
+            <strong>Carestie e Peste</strong>
+            <p>
+              Dal 1315 grandi carestie;
+              nel 1347 arriva la Peste Nera,
+              con forte crollo demografico
+              e crisi economica.
+            </p>
+          </div>
+
+          <div class="card">
+            <strong>Guerra dei Cent'Anni</strong>
+            <p>
+              1337–1453:
+              conflitto tra Inghilterra e Francia,
+              nuove armi, eserciti più professionali
+              e nascita del sentimento nazionale.
+            </p>
+          </div>
+
+          <div class="card">
+            <strong>Giovanna d'Arco</strong>
+            <p>
+              1429 libera Orléans;
+              nel 1431 viene processata
+              e bruciata.
+              Il suo mito rafforza
+              l'identità francese.
+            </p>
+          </div>
+
+          <div class="card">
+            <strong>Nuove tattiche</strong>
+            <p>
+              Arco lungo inglese,
+              prime artiglierie
+              e declino della cavalleria feudale.
+            </p>
+          </div>
+
+        </div>
+
+        <h3>
+          La Chiesa in crisi
+        </h3>
+
+        <ul>
+          <li>
+            1303:
+            scontro tra Bonifacio VIII
+            e Filippo il Bello ad Anagni.
+          </li>
+          <li>
+            1309–1377:
+            cattività avignonese.
+          </li>
+          <li>
+            Dal 1378:
+            Grande Scisma e più papi
+            in competizione.
+          </li>
+        </ul>
+
+        <h3>
+          Stati nazionali e Italia
+        </h3>
+
+        <ul>
+          <li>
+            Francia e Inghilterra rafforzano
+            monarchie, eserciti e burocrazie.
+          </li>
+          <li>
+            Inghilterra:
+            Guerra delle Due Rose 1455–1485
+            e affermazione dei Tudor.
+          </li>
+          <li>
+            Spagna:
+            matrimonio tra Isabella di Castiglia
+            e Ferdinando d'Aragona nel 1469.
+          </li>
+          <li>
+            Italia divisa tra Milano,
+            Venezia, Firenze, Roma e Napoli.
+          </li>
+          <li>
+            1454:
+            Pace di Lodi e politica di equilibrio
+            tra i cinque grandi stati italiani.
+          </li>
+        </ul>
+
+        <div class="study-box">
+
+          <h3>
+            Metodo rapido
+          </h3>
+
+          <ol>
+            <li>
+              Memorizza prima le date chiave.
+            </li>
+            <li>
+              Per ogni capitolo ripeti:
+              causa → evento → conseguenza.
+            </li>
+            <li>
+              Ripeti ad alta voce
+              i personaggi principali.
+            </li>
+            <li>
+              Chiudi senza appunti
+              e prova il quiz.
+            </li>
+          </ol>
+
+        </div>
+
+      </section>
+
+
+      <section
+        class="section quiz"
+        id="quiz"
+      >
+
+        <div class="section-kicker">
+          AUTOVERIFICA
+        </div>
+
+        <h2>
+          Domande da sapere
+        </h2>
+
+        <div class="focus">
+          <strong>
+            Come usarlo
+          </strong>
+          <p>
+            Rispondi prima senza aprire la soluzione.
+            Poi tocca la domanda per controllare.
+          </p>
+        </div>
+
+        <details>
+          <summary>
+            Come si scrive 1066
+            in numeri romani?
+          </summary>
+          <div class="answer">
+            MLXVI.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            Chi fu incoronato imperatore
+            da Papa Leone III nell'800?
+          </summary>
+          <div class="answer">
+            Carlo Magno.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            Quali erano i tre ordini
+            della società feudale?
+          </summary>
+          <div class="answer">
+            Oratores, bellatores e laboratores.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            Quali furono i tre principali
+            gruppi delle seconde invasioni?
+          </summary>
+          <div class="answer">
+            Vichinghi/Normanni,
+            Saraceni e Ungari/Magiari.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            Quali fattori spiegano
+            la rinascita dell'anno Mille?
+          </summary>
+          <div class="answer">
+            Clima favorevole,
+            innovazioni agricole,
+            crescita della produttività,
+            aumento demografico
+            e rinascita di città e commerci.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            Quali sono le cause
+            delle Crociate nel materiale?
+          </summary>
+          <div class="answer">
+            Cause religiose,
+            politiche ed economiche.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            Perché sono importanti
+            Legnano 1176 e
+            la Pace di Costanza 1183?
+          </summary>
+          <div class="answer">
+            Per la resistenza dei comuni
+            all'Impero e per il riconoscimento
+            della loro autonomia.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            Quali fattori provocano
+            la crisi del Trecento?
+          </summary>
+          <div class="answer">
+            Carestie, Peste Nera,
+            crollo demografico,
+            crisi economica
+            e forti tensioni politiche
+            e religiose.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            Come cambia la guerra
+            durante la Guerra dei Cent'Anni?
+          </summary>
+          <div class="answer">
+            Crescono il ruolo dei fanti
+            e dei soldati professionisti;
+            arco lungo e artiglierie
+            riducono l'importanza
+            della cavalleria feudale.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            Quali eventi mettono in crisi
+            l'autorità della Chiesa
+            nel Trecento?
+          </summary>
+          <div class="answer">
+            Lo scontro di Anagni,
+            la cattività avignonese
+            e il Grande Scisma.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            Perché la Pace di Lodi
+            del 1454 è importante?
+          </summary>
+          <div class="answer">
+            Crea un equilibrio
+            tra i principali stati italiani
+            per impedire il predominio
+            di uno solo e viene presentata
+            come una forma di diplomazia moderna.
+          </div>
+        </details>
+
+        <p class="source-note">
+          Questa pagina è un ripasso sintetico
+          del materiale fornito.
+          Per lo studio completo,
+          fai riferimento al PDF originale.
+        </p>
+
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>
