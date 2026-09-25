@@ -35,6 +35,15 @@ window.HOMEWORK_DATA = [
     subject: "Italiano",
     title: "Lettura",
     details: "Scegliere un libro a piacere e individuare 15 righe particolarmente apprezzate."
+  },
+
+  {
+    date: "2026-09-25",
+    subject: "Storia",
+    title: "Ripasso - Test d'ingresso",
+    details: "Ripassare il materiale sul Medioevo per il test d'ingresso.",
+    href: "./ripassare-storia.html",
+    actionLabel: "Apri il ripasso"
   }
 ,
 
@@ -82,6 +91,20 @@ window.NOTICE_DATA = [
     completed: true,
     title: "Inglese — Verifica",
     text: "Verifica di Inglese conclusa."
+  },
+
+  {
+    date: "2026-09-24",
+    type: "warning",
+    title: "Domani — Storia",
+    text: "È previsto un test d'ingresso di Storia. Ripassare il materiale sul Medioevo."
+  },
+
+  {
+    date: "2026-09-25",
+    type: "warning",
+    title: "Storia — Test d'ingresso",
+    text: "Oggi è previsto il test d'ingresso di Storia."
   }
 
 ];
