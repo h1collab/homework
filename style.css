@@ -1663,3 +1663,40 @@ button,
 }
 
 /* U22_HOMEWORK_LAYOUT_END */
+
+
+/* U22_HOMEWORK_ACTION_START */
+
+.homework-action {
+  width: fit-content;
+  margin-top: 13px;
+  padding: 8px 11px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  border: 1px solid #111111;
+  border-radius: 11px;
+
+  background: #111111;
+  color: #ffffff;
+
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.homework-action:hover {
+  opacity: 0.88;
+}
+
+.homework-action:active {
+  transform: scale(0.98);
+}
+
+/* U22_HOMEWORK_ACTION_END */
