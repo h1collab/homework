@@ -16,6 +16,14 @@ const ALL_SUBJECTS =
     ? window.ALL_SUBJECTS.slice()
     : [];
 
+const SUBJECT_CARRY_WEIGHT =
+  window.SUBJECT_CARRY_WEIGHT || {};
+
+const BAG_ESTIMATE_META =
+  window.BAG_ESTIMATE_META || {
+    baseKg: 0.9
+  };
+
 
 function pad(value) {
   return String(value).padStart(2, "0");
@@ -145,6 +153,9 @@ const els = {
 
   notices:
     document.querySelector("#notice-area"),
+
+  bag:
+    document.querySelector("#bag-area"),
 
   list:
     document.querySelector("#homework-list"),
@@ -841,6 +852,7 @@ function renderSchedule() {
         );
 
       renderSchedule();
+      renderBagSummary();
     }
   );
 
@@ -857,6 +869,7 @@ function renderSchedule() {
         );
 
       renderSchedule();
+      renderBagSummary();
     }
   );
 
@@ -868,6 +881,7 @@ function renderSchedule() {
         !state.carryOpen;
 
       renderSchedule();
+      renderBagSummary();
     }
   );
 
@@ -879,6 +893,7 @@ function renderSchedule() {
         TODAY_ISO;
 
       renderSchedule();
+      renderBagSummary();
     }
   );
 
@@ -942,12 +957,150 @@ function renderSchedule() {
         }
 
         renderSchedule();
+        renderBagSummary();
       },
       {
         passive: true
       }
     );
   }
+}
+
+
+/* =========================================================
+   ZAINO
+   ========================================================= */
+
+function bagLevel(weight) {
+  if (weight <= 4) {
+    return {
+      key: "light",
+      label: "Leggero"
+    };
+  }
+
+  if (weight <= 4.8) {
+    return {
+      key: "medium",
+      label: "Medio"
+    };
+  }
+
+  return {
+    key: "heavy",
+    label: "Pesante"
+  };
+}
+
+
+function bagWeightForDate(value) {
+  const date =
+    parseIsoDate(value);
+
+  const day =
+    date.getDay();
+
+  const timetableDay =
+    TIMETABLE[day];
+
+  if (!timetableDay) {
+    return {
+      kg: 0,
+      subjects: []
+    };
+  }
+
+  const subjects =
+    [...new Set(
+      timetableDay.lessons
+        .map(normalizeSubject)
+        .filter(Boolean)
+        .filter(
+          subject =>
+            subject !== "Prolungamento"
+        )
+    )];
+
+  const kg =
+    subjects.reduce(
+      (total, subject) =>
+        total +
+        (
+          SUBJECT_CARRY_WEIGHT[
+            subject
+          ] || 0
+        ),
+      BAG_ESTIMATE_META.baseKg || 0.9
+    );
+
+  return {
+    kg,
+    subjects
+  };
+}
+
+
+function renderBagSummary() {
+  if (!els.bag) {
+    return;
+  }
+
+  const data =
+    bagWeightForDate(
+      state.carryDate
+    );
+
+  if (!data.subjects.length) {
+    els.bag.innerHTML = "";
+    els.bag.hidden = true;
+    return;
+  }
+
+  els.bag.hidden = false;
+
+  const level =
+    bagLevel(data.kg);
+
+  els.bag.innerHTML = `
+    <a
+      class="bag-card bag-${level.key}"
+      href="./book/"
+    >
+
+      <div class="bag-icon">
+        🎒
+      </div>
+
+      <div class="bag-content">
+
+        <div class="bag-kicker">
+          ZAINO · STIMA
+        </div>
+
+        <div class="bag-title-row">
+
+          <h2>
+            ${data.kg.toFixed(1)} kg
+          </h2>
+
+          <span class="bag-level">
+            ${level.label}
+          </span>
+
+        </div>
+
+        <p>
+          ${data.subjects.join(" · ")}
+        </p>
+
+      </div>
+
+      <div class="bag-arrow">
+        →
+      </div>
+
+    </a>
+  `;
 }
 
 
@@ -1096,6 +1249,7 @@ function getFilteredHomework() {
 
 function render() {
   renderSchedule();
+  renderBagSummary();
   renderNotices();
 
   const filtered =
