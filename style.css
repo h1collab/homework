@@ -2287,3 +2287,124 @@ button,
 }
 
 /* U22_BAG_CARD_END */
+
+
+/* U22_DATE_CARRY_MERGE_START */
+
+.date-section {
+  margin-top: 30px;
+  padding-top: 2px;
+}
+
+.date-carry-divider {
+  margin: 18px 0 10px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: var(--muted);
+
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.date-carry-divider::before,
+.date-carry-divider::after {
+  content: "";
+
+  height: 1px;
+  flex: 1;
+
+  background: var(--line);
+}
+
+.date-carry-divider span {
+  flex: 0 1 auto;
+
+  padding: 0 4px;
+
+  text-align: center;
+}
+
+.date-section .schedule-area {
+  margin: 0;
+}
+
+.date-section .carry-card {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+
+  background: #fafaf8;
+
+  box-shadow: none;
+}
+
+.carry-card-unified {
+  overflow: hidden;
+}
+
+.carry-center-unified {
+  width: 100%;
+
+  padding: 17px 18px;
+
+  display: block;
+}
+
+.carry-center-unified .carry-title-row {
+  justify-content: space-between;
+}
+
+.carry-center-unified .carry-title-row h2 {
+  font-size: 21px;
+}
+
+.carry-center-unified .carry-date {
+  margin-top: 4px;
+}
+
+.date-section .carry-details {
+  padding: 0 18px 18px;
+}
+
+.date-section .bag-area {
+  margin: 10px 0 0;
+}
+
+.date-section .bag-card {
+  min-height: 128px;
+
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  box-shadow: none;
+}
+
+.date-section .filter-label {
+  font-weight: 700;
+}
+
+@media (max-width: 560px) {
+  .date-carry-divider {
+    margin-top: 15px;
+
+    font-size: 9px;
+  }
+
+  .carry-center-unified {
+    padding: 15px;
+  }
+
+  .carry-center-unified .carry-title-row h2 {
+    font-size: 19px;
+  }
+
+  .date-section .bag-card {
+    min-height: 120px;
+  }
+}
+
+/* U22_DATE_CARRY_MERGE_END */
