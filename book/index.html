@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
-
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -17,20 +16,24 @@
   <style>
     :root {
       --bg: #f7f7f4;
-      --surface: #ffffff;
+      --surface: rgba(255,255,255,.82);
+      --surface-solid: #ffffff;
       --surface-soft: #efefeb;
       --text: #111111;
       --muted: #6f6f69;
+      --muted-2: #969690;
       --line: #deded8;
 
       --green: #10a37f;
-      --green-soft: #e7f5f0;
-
-      --yellow: #d6a20e;
-      --yellow-soft: #fff7d6;
-
+      --green-soft: #e8f6f1;
+      --yellow: #d89b13;
+      --yellow-soft: #fff7d9;
       --red: #d92d20;
       --red-soft: #fff0ee;
+
+      --shadow:
+        0 1px 2px rgba(0,0,0,.025),
+        0 10px 34px rgba(0,0,0,.04);
     }
 
     * {
@@ -39,12 +42,20 @@
 
     html {
       -webkit-text-size-adjust: 100%;
+      scroll-behavior: smooth;
     }
 
     body {
       margin: 0;
 
-      background: var(--bg);
+      background:
+        radial-gradient(
+          circle at 80% 0%,
+          rgba(16,163,127,.055),
+          transparent 32rem
+        ),
+        var(--bg);
+
       color: var(--text);
 
       font-family:
@@ -61,29 +72,55 @@
       color: inherit;
     }
 
+    button {
+      font: inherit;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
     .page {
-      width: min(940px, calc(100% - 28px));
+      width: min(1040px, calc(100% - 28px));
       margin: 0 auto;
-      padding-bottom: 80px;
+      padding-bottom: 88px;
     }
 
     .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+
       min-height: 68px;
 
       display: flex;
       align-items: center;
       justify-content: space-between;
 
-      border-bottom: 1px solid var(--line);
+      gap: 14px;
+
+      border-bottom: 1px solid rgba(222,222,216,.82);
+
+      background: rgba(247,247,244,.82);
+      backdrop-filter: blur(18px);
     }
 
     .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
       color: var(--muted);
 
       font-size: 13px;
       font-weight: 650;
 
       text-decoration: none;
+    }
+
+    .back svg {
+      width: 17px;
+      height: 17px;
     }
 
     .badge {
@@ -95,71 +132,375 @@
       background: rgba(255,255,255,.72);
       color: var(--muted);
 
-      font-size: 11px;
-      font-weight: 700;
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: .06em;
     }
 
     .hero {
-      padding: 58px 4px 34px;
+      padding: 58px 0 30px;
+
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 390px);
+      gap: 34px;
+      align-items: end;
+    }
+
+    .hero-copy {
+      min-width: 0;
     }
 
     .eyebrow {
-      margin-bottom: 13px;
+      margin-bottom: 14px;
 
       color: var(--green);
 
       font-size: 11px;
       font-weight: 800;
-
-      letter-spacing: .08em;
+      letter-spacing: .09em;
     }
 
     h1 {
       margin: 0;
 
-      max-width: 760px;
+      max-width: 700px;
 
-      font-size: clamp(42px, 8vw, 68px);
-      line-height: .98;
+      font-size: clamp(46px, 8vw, 74px);
+      line-height: .95;
 
-      font-weight: 640;
-
-      letter-spacing: -.05em;
+      font-weight: 620;
+      letter-spacing: -.058em;
     }
 
-    .hero p {
-      max-width: 670px;
+    .hero-copy > p {
+      max-width: 650px;
 
-      margin: 22px 0 0;
+      margin: 23px 0 0;
 
       color: var(--muted);
 
       font-size: 16px;
-      line-height: 1.65;
+      line-height: 1.7;
     }
 
-    .note {
-      margin-bottom: 18px;
-      padding: 16px 18px;
+    .hero-meta {
+      margin-top: 24px;
 
-      border: 1px solid #eadca2;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .meta-chip {
+      padding: 7px 10px;
+
+      border: 1px solid var(--line);
+      border-radius: 999px;
+
+      background: rgba(255,255,255,.66);
+      color: var(--muted);
+
+      font-size: 10px;
+      font-weight: 680;
+    }
+
+    .today-card {
+      --today-accent: var(--green);
+
+      position: relative;
+      min-height: 310px;
+
+      overflow: hidden;
+
+      padding: 22px;
+
+      border: 1px solid var(--line);
+      border-radius: 30px;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255,255,255,.94),
+          rgba(250,250,248,.86)
+        );
+
+      box-shadow: var(--shadow);
+    }
+
+    .today-card.level-light {
+      --today-accent: var(--green);
+    }
+
+    .today-card.level-medium {
+      --today-accent: var(--yellow);
+    }
+
+    .today-card.level-heavy {
+      --today-accent: var(--red);
+    }
+
+    .today-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      gap: 14px;
+    }
+
+    .today-kicker {
+      color: var(--muted);
+
+      font-size: 10px;
+      font-weight: 780;
+      letter-spacing: .09em;
+    }
+
+    .today-day {
+      margin-top: 6px;
+
+      font-size: 22px;
+      font-weight: 640;
+      letter-spacing: -.03em;
+    }
+
+    .today-level {
+      padding: 5px 9px;
+
+      border-radius: 999px;
+
+      background: var(--surface-soft);
+      color: var(--today-accent);
+
+      font-size: 10px;
+      font-weight: 750;
+    }
+
+    .today-middle {
+      margin-top: 26px;
+
+      display: grid;
+      grid-template-columns: 136px minmax(0, 1fr);
+      gap: 18px;
+      align-items: center;
+    }
+
+    .hero-bag-wrap {
+      display: grid;
+      place-items: center;
+    }
+
+    .hero-bag {
+      width: 122px;
+      height: 144px;
+
+      overflow: visible;
+    }
+
+    .bag-empty {
+      fill: rgba(255,255,255,.28);
+    }
+
+    .bag-fill {
+      fill: var(--today-accent);
+
+      opacity: .9;
+
+      transform-box: fill-box;
+      transform-origin: 50% 100%;
+      transform: scaleY(0);
+    }
+
+    .today-card.is-loaded .bag-fill {
+      animation:
+        heroBagFill 1.3s
+        cubic-bezier(.22,1,.36,1)
+        .18s
+        forwards;
+    }
+
+    .bag-line {
+      fill: none;
+
+      stroke: #242421;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .bag-line.soft {
+      stroke: rgba(36,36,33,.55);
+      stroke-width: 1.6;
+    }
+
+    .today-weight {
+      min-width: 0;
+    }
+
+    .today-value {
+      font-size: 42px;
+      line-height: .95;
+
+      font-weight: 660;
+      letter-spacing: -.06em;
+    }
+
+    .today-label {
+      margin-top: 7px;
+
+      color: var(--muted);
+
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .today-subjects {
+      margin-top: 18px;
+
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: 6px;
+    }
+
+    .today-subjects span {
+      padding: 5px 8px;
+
+      border-radius: 999px;
+
+      background: var(--surface-soft);
+      color: var(--muted);
+
+      font-size: 9px;
+      font-weight: 680;
+    }
+
+    .today-scale {
+      position: absolute;
+      right: 22px;
+      bottom: 20px;
+      left: 22px;
+
+      display: grid;
+      grid-template-columns: auto minmax(0,1fr) auto;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .today-scale-label {
+      color: var(--muted-2);
+      font-size: 8px;
+      font-weight: 680;
+    }
+
+    .today-scale-track {
+      position: relative;
+      height: 10px;
+    }
+
+    .today-scale-track::before {
+      content: "";
+
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+
+      height: 1px;
+
+      background: #d9d9d3;
+
+      transform: translateY(-50%);
+    }
+
+    .today-scale-fill {
+      position: absolute;
+      left: 0;
+      top: 50%;
+
+      width: 0;
+      height: 2px;
+
+      border-radius: 999px;
+
+      background: var(--today-accent);
+
+      transform: translateY(-50%);
+    }
+
+    .today-card.is-loaded .today-scale-fill {
+      animation:
+        scaleFill .9s
+        cubic-bezier(.22,1,.36,1)
+        .36s
+        forwards;
+    }
+
+    .today-scale-dot {
+      position: absolute;
+      top: 50%;
+      left: 0;
+
+      width: 7px;
+      height: 7px;
+
+      border: 1.5px solid white;
+      border-radius: 50%;
+
+      background: var(--today-accent);
+
+      box-shadow:
+        0 0 0 1px rgba(17,17,17,.08);
+
+      transform: translate(-50%,-50%);
+    }
+
+    .today-card.is-loaded .today-scale-dot {
+      animation:
+        scaleDot .9s
+        cubic-bezier(.22,1,.36,1)
+        .36s
+        forwards;
+    }
+
+    .info-strip {
+      margin-top: 2px;
+      padding: 14px 16px;
+
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+
+      border: 1px solid #e9dfae;
       border-radius: 16px;
 
-      background: #fff8d9;
-      color: #675f3c;
+      background: rgba(255,248,217,.78);
+      color: #665d39;
 
-      font-size: 13px;
+      font-size: 12px;
       line-height: 1.55;
+    }
+
+    .info-strip svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+
+      margin-top: 1px;
     }
 
     .section {
       margin-top: 18px;
-      padding: 22px;
+      padding: 24px;
 
       border: 1px solid var(--line);
-      border-radius: 24px;
+      border-radius: 26px;
 
       background: var(--surface);
+
+      box-shadow:
+        0 1px 2px rgba(0,0,0,.018);
+
+      backdrop-filter: blur(12px);
     }
 
     .section-head {
@@ -167,35 +508,39 @@
       align-items: flex-end;
       justify-content: space-between;
 
-      gap: 16px;
+      gap: 18px;
 
-      margin-bottom: 16px;
+      margin-bottom: 19px;
     }
 
     .section-kicker {
-      margin-bottom: 5px;
+      margin-bottom: 6px;
 
       color: var(--green);
 
       font-size: 10px;
       font-weight: 800;
-
-      letter-spacing: .08em;
+      letter-spacing: .09em;
     }
 
     .section h2 {
       margin: 0;
 
-      font-size: 23px;
-      line-height: 1.15;
+      font-size: 25px;
+      line-height: 1.12;
 
-      letter-spacing: -.03em;
+      font-weight: 630;
+      letter-spacing: -.035em;
     }
 
     .section-sub {
+      max-width: 340px;
+
       color: var(--muted);
 
-      font-size: 12px;
+      font-size: 11px;
+      line-height: 1.5;
+      text-align: right;
     }
 
     .weight-grid {
@@ -204,87 +549,258 @@
       grid-template-columns:
         repeat(5, minmax(0, 1fr));
 
-      gap: 8px;
+      gap: 9px;
     }
 
     .weight-card {
-      padding: 14px;
+      --weight-accent: var(--green);
+      --bar-width: 0%;
+
+      position: relative;
+
+      min-height: 144px;
+
+      padding: 15px;
+
+      overflow: hidden;
 
       border: 1px solid var(--line);
-      border-radius: 16px;
+      border-radius: 18px;
 
       background: #fafaf8;
+
+      transition:
+        transform .18s ease,
+        border-color .18s ease,
+        box-shadow .18s ease;
     }
 
-    .weight-card strong {
-      display: block;
+    .weight-card:hover {
+      transform: translateY(-2px);
 
-      margin-bottom: 8px;
+      border-color: #d0d0ca;
 
-      font-size: 12px;
+      box-shadow:
+        0 8px 24px rgba(0,0,0,.045);
     }
 
-    .weight-value {
-      font-size: 22px;
-      font-weight: 680;
-
-      letter-spacing: -.04em;
+    .weight-card.level-light {
+      --weight-accent: var(--green);
     }
 
-    .weight-meta {
-      margin-top: 4px;
+    .weight-card.level-medium {
+      --weight-accent: var(--yellow);
+    }
+
+    .weight-card.level-heavy {
+      --weight-accent: var(--red);
+    }
+
+    .weight-card.is-today {
+      border-color: color-mix(in srgb, var(--weight-accent) 36%, var(--line));
+      background:
+        linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--weight-accent) 7%, white),
+          #fafaf8
+        );
+    }
+
+    .weight-day {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 6px;
 
       color: var(--muted);
 
       font-size: 10px;
+      font-weight: 720;
     }
 
-    .weight-bar {
-      height: 6px;
-
-      margin-top: 12px;
+    .weight-today {
+      padding: 3px 6px;
 
       border-radius: 999px;
 
-      background: var(--surface-soft);
+      background: white;
+      color: var(--weight-accent);
+
+      font-size: 8px;
+      font-weight: 800;
+    }
+
+    .weight-value {
+      margin-top: 18px;
+
+      font-size: 25px;
+      line-height: 1;
+
+      font-weight: 680;
+      letter-spacing: -.05em;
+    }
+
+    .weight-meta {
+      margin-top: 6px;
+
+      color: var(--muted-2);
+
+      font-size: 9px;
+      line-height: 1.45;
+    }
+
+    .weight-bar {
+      position: absolute;
+      left: 15px;
+      right: 15px;
+      bottom: 15px;
+
+      height: 5px;
 
       overflow: hidden;
+
+      border-radius: 999px;
+      background: #e8e8e3;
     }
 
     .weight-fill {
+      width: 0;
       height: 100%;
 
       border-radius: inherit;
+
+      background: var(--weight-accent);
     }
 
-    .level-light .weight-fill {
-      background: var(--green);
+    .weight-card.is-visible .weight-fill {
+      width: var(--bar-width);
+
+      transition:
+        width 1.05s
+        cubic-bezier(.22,1,.36,1)
+        var(--delay, 0ms);
     }
 
-    .level-medium .weight-fill {
-      background: var(--yellow);
+    .rules-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(3, minmax(0,1fr));
+
+      gap: 9px;
     }
 
-    .level-heavy .weight-fill {
-      background: var(--red);
+    .rule-card {
+      padding: 16px;
+
+      border: 1px solid var(--line);
+      border-radius: 17px;
+
+      background: #fafaf8;
+    }
+
+    .rule-subject {
+      display: inline-flex;
+
+      margin-bottom: 9px;
+      padding: 4px 8px;
+
+      border-radius: 999px;
+
+      background: var(--green-soft);
+      color: #08765b;
+
+      font-size: 9px;
+      font-weight: 780;
+      text-transform: uppercase;
+    }
+
+    .rule-card p {
+      margin: 0;
+
+      color: var(--muted);
+
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .books-toolbar {
+      margin-bottom: 17px;
+
+      display: flex;
+      gap: 7px;
+
+      overflow-x: auto;
+      scrollbar-width: none;
+
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .books-toolbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-chip {
+      flex: 0 0 auto;
+
+      min-height: 34px;
+      padding: 0 11px;
+
+      border: 1px solid var(--line);
+      border-radius: 999px;
+
+      background: white;
+      color: var(--muted);
+
+      font-size: 10px;
+      font-weight: 700;
+
+      cursor: pointer;
+
+      transition:
+        background .15s ease,
+        color .15s ease,
+        border-color .15s ease;
+    }
+
+    .filter-chip.is-active {
+      border-color: #111;
+      background: #111;
+      color: white;
     }
 
     .books {
       display: grid;
 
       grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+        repeat(2, minmax(0,1fr));
 
       gap: 10px;
     }
 
     .book-card {
-      padding: 17px;
+      position: relative;
+
+      padding: 18px;
 
       border: 1px solid var(--line);
-      border-radius: 18px;
+      border-radius: 19px;
 
       background: #fafaf8;
+
+      transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+    }
+
+    .book-card:hover {
+      transform: translateY(-2px);
+
+      border-color: #d0d0ca;
+
+      box-shadow:
+        0 10px 26px rgba(0,0,0,.045);
     }
 
     .book-top {
@@ -293,6 +809,10 @@
       justify-content: space-between;
 
       gap: 14px;
+    }
+
+    .book-main {
+      min-width: 0;
     }
 
     .subject {
@@ -306,26 +826,47 @@
       background: var(--green-soft);
       color: #08765b;
 
-      font-size: 10px;
-      font-weight: 750;
-
+      font-size: 9px;
+      font-weight: 780;
       text-transform: uppercase;
     }
 
     .book-card h3 {
       margin: 0;
 
-      font-size: 16px;
-      line-height: 1.3;
+      font-size: 17px;
+      line-height: 1.28;
+
+      font-weight: 640;
+      letter-spacing: -.02em;
     }
 
-    .book-card p {
+    .book-subtitle {
       margin: 7px 0 0;
 
       color: var(--muted);
 
       font-size: 12px;
-      line-height: 1.55;
+      line-height: 1.5;
+    }
+
+    .book-publisher {
+      margin: 10px 0 0;
+
+      color: #555550;
+
+      font-size: 11px;
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
+    .book-authors {
+      margin: 3px 0 0;
+
+      color: var(--muted-2);
+
+      font-size: 10px;
+      line-height: 1.45;
     }
 
     .kg {
@@ -335,15 +876,16 @@
 
       border-radius: 999px;
 
-      background: var(--surface-soft);
+      background: white;
       color: var(--muted);
 
-      font-size: 10px;
-      font-weight: 700;
+      font-size: 9px;
+      font-weight: 720;
+      white-space: nowrap;
     }
 
     .carry-note {
-      margin-top: 12px;
+      margin-top: 13px;
       padding: 10px 11px;
 
       border-radius: 12px;
@@ -351,7 +893,7 @@
       background: var(--green-soft);
       color: #365f54;
 
-      font-size: 11px;
+      font-size: 10px;
       line-height: 1.5;
       font-weight: 650;
     }
@@ -362,20 +904,130 @@
     }
 
     .isbn {
-      margin-top: 12px;
+      margin-top: 13px;
       padding-top: 11px;
 
       border-top: 1px solid var(--line);
 
-      color: #8b8b85;
+      color: var(--muted-2);
 
-      font-size: 10px;
+      font-size: 9px;
+      font-weight: 620;
+      letter-spacing: .02em;
     }
 
-    @media (max-width: 760px) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+
+      transition:
+        opacity .48s ease var(--delay, 0ms),
+        transform .58s cubic-bezier(.22,1,.36,1) var(--delay, 0ms);
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .hero-load {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    body.is-ready .hero-load {
+      opacity: 1;
+      transform: translateY(0);
+
+      transition:
+        opacity .56s ease var(--load-delay, 0ms),
+        transform .72s cubic-bezier(.22,1,.36,1) var(--load-delay, 0ms);
+    }
+
+    @keyframes heroBagFill {
+      from {
+        transform: scaleY(0);
+        opacity: .14;
+      }
+
+      to {
+        transform: scaleY(var(--fill-ratio));
+        opacity: .9;
+      }
+    }
+
+    @keyframes scaleFill {
+      from {
+        width: 0;
+      }
+
+      to {
+        width: var(--meter);
+      }
+    }
+
+    @keyframes scaleDot {
+      from {
+        left: 0;
+      }
+
+      to {
+        left: var(--meter);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .today-card {
+        min-height: 280px;
+      }
+
       .weight-grid {
         grid-template-columns:
-          repeat(2, minmax(0, 1fr));
+          repeat(3, minmax(0,1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      .page {
+        width: calc(100% - 22px);
+      }
+
+      .hero {
+        padding-top: 42px;
+        gap: 24px;
+      }
+
+      .today-card {
+        border-radius: 24px;
+      }
+
+      .section {
+        padding: 18px;
+        border-radius: 22px;
+      }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .section-sub {
+        max-width: none;
+        text-align: left;
+      }
+
+      .weight-grid {
+        grid-template-columns:
+          repeat(2, minmax(0,1fr));
+      }
+
+      .rules-grid {
+        grid-template-columns: 1fr;
       }
 
       .books {
@@ -383,15 +1035,66 @@
       }
     }
 
-    @media (max-width: 420px) {
-      .section {
-        padding: 17px;
+    @media (max-width: 440px) {
+      .today-card {
+        min-height: 300px;
+        padding: 18px;
+      }
 
-        border-radius: 20px;
+      .today-middle {
+        grid-template-columns: 112px minmax(0,1fr);
+        gap: 11px;
+      }
+
+      .hero-bag {
+        width: 102px;
+        height: 122px;
+      }
+
+      .today-value {
+        font-size: 36px;
+      }
+
+      .today-scale {
+        right: 18px;
+        bottom: 17px;
+        left: 18px;
       }
 
       .weight-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .weight-card {
+        min-height: 132px;
+      }
+
+      .book-top {
+        flex-direction: column;
+      }
+
+      .kg {
+        order: 2;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+
+      .reveal,
+      .hero-load {
+        opacity: 1 !important;
+        transform: none !important;
       }
     }
   </style>
@@ -407,11 +1110,22 @@
         class="back"
         href="../"
       >
-        ← Compiti
+        <svg viewBox="0 0 20 20" aria-hidden="true">
+          <path
+            d="M12.5 4.5 7 10l5.5 5.5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+
+        Compiti
       </a>
 
       <span class="badge">
-        LIBRI
+        2D · LIBRI
       </span>
 
     </header>
@@ -421,37 +1135,276 @@
 
       <section class="hero">
 
-        <div class="eyebrow">
-          LIBRI · ZAINO
+        <div class="hero-copy">
+
+          <div
+            class="eyebrow hero-load"
+            style="--load-delay:40ms"
+          >
+            LIBRI · ZAINO
+          </div>
+
+          <h1
+            class="hero-load"
+            style="--load-delay:90ms"
+          >
+            Porta quello
+            che serve.
+          </h1>
+
+          <p
+            class="hero-load"
+            style="--load-delay:150ms"
+          >
+            IC Uboldo “Manzoni” · classe 2D.
+            Libri adottati 2026/2027, regole pratiche
+            su cosa portare e stima giornaliera
+            del peso dello zaino.
+          </p>
+
+          <div
+            class="hero-meta hero-load"
+            style="--load-delay:210ms"
+          >
+            <span class="meta-chip">
+              2D
+            </span>
+
+            <span class="meta-chip">
+              Inglese · Francese
+            </span>
+
+            <span class="meta-chip">
+              2026/2027
+            </span>
+          </div>
+
         </div>
 
-        <h1>
-          Cosa portare,
-          con meno peso.
-        </h1>
 
-        <p>
-          IC Uboldo “Manzoni” · classe 2D.
-          Libri adottati 2026/2027
-          e stima del peso dello zaino
-          per ogni giorno della settimana.
-        </p>
+        <article
+          class="today-card hero-load"
+          id="today-card"
+          style="--load-delay:170ms"
+        >
+          <div class="today-top">
+            <div>
+              <div class="today-kicker">
+                OGGI
+              </div>
+
+              <div
+                class="today-day"
+                id="today-day"
+              >
+                —
+              </div>
+            </div>
+
+            <span
+              class="today-level"
+              id="today-level"
+            >
+              —
+            </span>
+          </div>
+
+
+          <div class="today-middle">
+
+            <div class="hero-bag-wrap">
+
+              <svg
+                class="hero-bag"
+                viewBox="0 0 110 126"
+                aria-hidden="true"
+              >
+                <defs>
+                  <clipPath id="today-bag-clip">
+                    <path
+                      d="M31 35
+                         C31 26 38 19 47 19
+                         H63
+                         C72 19 79 26 79 35
+                         V38
+                         H82
+                         C91 38 98 45 98 54
+                         V101
+                         C98 111 90 119 80 119
+                         H30
+                         C20 119 12 111 12 101
+                         V54
+                         C12 45 19 38 28 38
+                         H31
+                         Z"
+                    />
+                  </clipPath>
+                </defs>
+
+                <path
+                  class="bag-empty"
+                  d="M31 35
+                     C31 26 38 19 47 19
+                     H63
+                     C72 19 79 26 79 35
+                     V38
+                     H82
+                     C91 38 98 45 98 54
+                     V101
+                     C98 111 90 119 80 119
+                     H30
+                     C20 119 12 111 12 101
+                     V54
+                     C12 45 19 38 28 38
+                     H31
+                     Z"
+                />
+
+                <rect
+                  class="bag-fill"
+                  x="12"
+                  y="31"
+                  width="86"
+                  height="88"
+                  clip-path="url(#today-bag-clip)"
+                />
+
+                <path
+                  class="bag-line"
+                  d="M31 35
+                     C31 26 38 19 47 19
+                     H63
+                     C72 19 79 26 79 35
+                     V38
+                     H82
+                     C91 38 98 45 98 54
+                     V101
+                     C98 111 90 119 80 119
+                     H30
+                     C20 119 12 111 12 101
+                     V54
+                     C12 45 19 38 28 38
+                     H31
+                     Z"
+                />
+
+                <path
+                  class="bag-line"
+                  d="M42 38
+                     V32
+                     C42 28 45 25 49 25
+                     H61
+                     C65 25 68 28 68 32
+                     V38"
+                />
+
+                <path
+                  class="bag-line soft"
+                  d="M31 72
+                     H79
+                     V92
+                     C79 97 75 101 70 101
+                     H40
+                     C35 101 31 97 31 92
+                     Z"
+                />
+
+                <path
+                  class="bag-line soft"
+                  d="M47 72
+                     V67
+                     C47 64 49 62 52 62
+                     H58
+                     C61 62 63 64 63 67
+                     V72"
+                />
+              </svg>
+
+            </div>
+
+
+            <div class="today-weight">
+
+              <div
+                class="today-value"
+                id="today-value"
+              >
+                —
+              </div>
+
+              <div class="today-label">
+                peso stimato<br>
+                libri + materiale base
+              </div>
+
+              <div
+                class="today-subjects"
+                id="today-subjects"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <div class="today-scale">
+
+            <span class="today-scale-label">
+              0
+            </span>
+
+            <div class="today-scale-track">
+              <span class="today-scale-fill"></span>
+              <span class="today-scale-dot"></span>
+            </div>
+
+            <span class="today-scale-label">
+              6 kg
+            </span>
+
+          </div>
+
+        </article>
 
       </section>
 
 
-      <div class="note">
-        Elenco riferito alla classe 2D della Scuola Secondaria di I grado
-        Manzoni di Uboldo (VAMM852013), 36 ore tempo prolungato
-        inglese-francese, anno scolastico 2026/2027.
-        I dati di adozione risultano aggiornati al 07/09/2026.
-        I pesi restano stime pratiche e non valori ufficiali degli editori.
-        Le stime tengono conto di cosa viene effettivamente portato: Geografia e Storia solo volume 2;
-        Matematica e Inglese solo la parte prevista; Tecnologia normalmente solo il materiale indicato.
+      <div
+        class="info-strip reveal"
+        style="--delay:20ms"
+      >
+        <svg viewBox="0 0 20 20" aria-hidden="true">
+          <circle
+            cx="10"
+            cy="10"
+            r="7.2"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.4"
+          />
+          <path
+            d="M10 8.7v4.2M10 6.2h.01"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+          />
+        </svg>
+
+        <span>
+          La stima usa il materiale che porti davvero:
+          Geografia e Storia solo volume 2;
+          Matematica e Inglese solo la parte prevista;
+          Tecnologia normalmente solo il materiale indicato.
+          I pesi non sono valori ufficiali degli editori.
+        </span>
       </div>
 
 
-      <section class="section">
+      <section
+        class="section reveal"
+        id="settimana"
+      >
 
         <div class="section-head">
 
@@ -461,12 +1414,12 @@
             </div>
 
             <h2>
-              Peso stimato dello zaino
+              Peso stimato
             </h2>
           </div>
 
           <div class="section-sub">
-            libri + materiale base
+            Ogni scheda si anima quando entra nello schermo.
           </div>
 
         </div>
@@ -479,7 +1432,41 @@
       </section>
 
 
-      <section class="section">
+      <section
+        class="section reveal"
+        id="regole"
+      >
+
+        <div class="section-head">
+
+          <div>
+            <div class="section-kicker">
+              REGOLE PRATICHE
+            </div>
+
+            <h2>
+              Cosa portare
+            </h2>
+          </div>
+
+          <div class="section-sub">
+            Le indicazioni che usiamo per stimare lo zaino.
+          </div>
+
+        </div>
+
+        <div
+          class="rules-grid"
+          id="rules-grid"
+        ></div>
+
+      </section>
+
+
+      <section
+        class="section reveal"
+        id="libri"
+      >
 
         <div class="section-head">
 
@@ -489,15 +1476,26 @@
             </div>
 
             <h2>
-              Libri
+              Libri adottati
             </h2>
           </div>
 
-          <div class="section-sub">
-            2D · 11 adozioni
+          <div
+            class="section-sub"
+            id="books-count"
+          >
+            —
           </div>
 
         </div>
+
+
+        <div
+          class="books-toolbar"
+          id="books-toolbar"
+          aria-label="Filtra per materia"
+        ></div>
+
 
         <div
           class="books"
@@ -515,11 +1513,15 @@
     const bust = Date.now();
 
     document.write(
-      `<script src="../orario.js?v=${bust}"><\/script>`
+      '<script src="../orario.js?v=' +
+      bust +
+      '"><\\/script>'
     );
 
     document.write(
-      `<script src="../book-data.js?v=${bust}"><\/script>`
+      '<script src="../book-data.js?v=' +
+      bust +
+      '"><\\/script>'
     );
   </script>
 
@@ -533,6 +1535,9 @@
     const WEIGHTS =
       window.SUBJECT_CARRY_WEIGHT || {};
 
+    const NOTES =
+      window.SUBJECT_CARRY_NOTE || {};
+
     const META =
       window.BAG_ESTIMATE_META || {
         baseKg: 0.9
@@ -544,36 +1549,57 @@
 
     function level(weight) {
       if (weight <= 4) {
-        return "light";
+        return {
+          key: "light",
+          label: "Leggero"
+        };
       }
 
       if (weight <= 4.8) {
-        return "medium";
+        return {
+          key: "medium",
+          label: "Medio"
+        };
       }
 
-      return "heavy";
+      return {
+        key: "heavy",
+        label: "Pesante"
+      };
     }
 
 
-    function dayWeight(day) {
+    function uniqueSubjects(day) {
       const data =
         TIMETABLE[day];
 
       if (!data) {
-        return 0;
+        return [];
       }
 
-      const unique =
-        [...new Set(
+      return [
+        ...new Set(
           data.lessons
             .filter(Boolean)
             .filter(
               subject =>
-                subject !== "Prolungamento"
+                subject !==
+                "Prolungamento"
             )
-        )];
+        )
+      ];
+    }
 
-      return unique.reduce(
+
+    function dayWeight(day) {
+      const subjects =
+        uniqueSubjects(day);
+
+      if (!subjects.length) {
+        return 0;
+      }
+
+      return subjects.reduce(
         (total, subject) =>
           total +
           (WEIGHTS[subject] || 0),
@@ -582,27 +1608,180 @@
     }
 
 
-    const dayNames = {
-      1: "Lunedì",
-      2: "Martedì",
-      3: "Mercoledì",
-      4: "Giovedì",
-      5: "Venerdì"
-    };
+    function weekdayName(day) {
+      return {
+        1: "Lunedì",
+        2: "Martedì",
+        3: "Mercoledì",
+        4: "Giovedì",
+        5: "Venerdì"
+      }[day] || "Nessuna lezione";
+    }
 
 
-    const grid =
-      document.querySelector(
-        "#weight-grid"
+    function createElement(
+      tag,
+      className,
+      text
+    ) {
+      const el =
+        document.createElement(tag);
+
+      if (className) {
+        el.className = className;
+      }
+
+      if (text !== undefined) {
+        el.textContent = text;
+      }
+
+      return el;
+    }
+
+
+    function renderToday() {
+      const now =
+        new Date();
+
+      const day =
+        now.getDay();
+
+      const todayCard =
+        document.querySelector(
+          "#today-card"
+        );
+
+      const dayEl =
+        document.querySelector(
+          "#today-day"
+        );
+
+      const levelEl =
+        document.querySelector(
+          "#today-level"
+        );
+
+      const valueEl =
+        document.querySelector(
+          "#today-value"
+        );
+
+      const subjectsEl =
+        document.querySelector(
+          "#today-subjects"
+        );
+
+      if (
+        day === 0 ||
+        day === 6 ||
+        !TIMETABLE[day]
+      ) {
+        dayEl.textContent =
+          weekdayName(day);
+
+        levelEl.textContent =
+          "Riposo";
+
+        valueEl.textContent =
+          "—";
+
+        subjectsEl.innerHTML = "";
+
+        todayCard.style.setProperty(
+          "--fill-ratio",
+          "0"
+        );
+
+        todayCard.style.setProperty(
+          "--meter",
+          "0%"
+        );
+
+        todayCard.classList.add(
+          "level-light"
+        );
+
+        return;
+      }
+
+      const kg =
+        dayWeight(day);
+
+      const state =
+        level(kg);
+
+      const subjects =
+        uniqueSubjects(day);
+
+      const ratio =
+        Math.max(
+          .12,
+          Math.min(
+            .94,
+            kg / 6
+          )
+        );
+
+      const meter =
+        Math.round(
+          ratio * 100
+        ) + "%";
+
+      dayEl.textContent =
+        weekdayName(day);
+
+      levelEl.textContent =
+        state.label;
+
+      valueEl.textContent =
+        kg.toFixed(1) +
+        " kg";
+
+      todayCard.classList.add(
+        "level-" + state.key
       );
 
-    grid.innerHTML =
-      [1, 2, 3, 4, 5]
-        .map(day => {
+      todayCard.style.setProperty(
+        "--fill-ratio",
+        ratio
+      );
+
+      todayCard.style.setProperty(
+        "--meter",
+        meter
+      );
+
+      subjectsEl.innerHTML = "";
+
+      subjects.forEach(subject => {
+        subjectsEl.appendChild(
+          createElement(
+            "span",
+            "",
+            subject
+          )
+        );
+      });
+    }
+
+
+    function renderWeights() {
+      const grid =
+        document.querySelector(
+          "#weight-grid"
+        );
+
+      const currentDay =
+        new Date().getDay();
+
+      grid.innerHTML = "";
+
+      [1,2,3,4,5]
+        .forEach((day, index) => {
           const kg =
             dayWeight(day);
 
-          const weightLevel =
+          const state =
             level(kg);
 
           const width =
@@ -611,104 +1790,564 @@
               (kg / 6) * 100
             );
 
-          return `
-            <article class="weight-card level-${weightLevel}">
+          const card =
+            createElement(
+              "article",
+              "weight-card level-" +
+              state.key +
+              " reveal"
+            );
 
-              <strong>
-                ${dayNames[day]}
-              </strong>
+          card.style.setProperty(
+            "--bar-width",
+            width + "%"
+          );
 
-              <div class="weight-value">
-                ${kg.toFixed(1)} kg
-              </div>
+          card.style.setProperty(
+            "--delay",
+            (index * 60) + "ms"
+          );
 
-              <div class="weight-meta">
-                stima
-              </div>
+          if (day === currentDay) {
+            card.classList.add(
+              "is-today"
+            );
+          }
 
-              <div class="weight-bar">
-                <div
-                  class="weight-fill"
-                  style="width:${width}%"
-                ></div>
-              </div>
+          const top =
+            createElement(
+              "div",
+              "weight-day"
+            );
 
-            </article>
-          `;
-        })
-        .join("");
+          top.appendChild(
+            createElement(
+              "span",
+              "",
+              weekdayName(day)
+            )
+          );
+
+          if (day === currentDay) {
+            top.appendChild(
+              createElement(
+                "span",
+                "weight-today",
+                "OGGI"
+              )
+            );
+          }
+
+          const value =
+            createElement(
+              "div",
+              "weight-value",
+              "0.0 kg"
+            );
+
+          value.dataset.target =
+            kg.toFixed(1);
+
+          const meta =
+            createElement(
+              "div",
+              "weight-meta",
+              state.label +
+              " · stima"
+            );
+
+          const bar =
+            createElement(
+              "div",
+              "weight-bar"
+            );
+
+          bar.appendChild(
+            createElement(
+              "div",
+              "weight-fill"
+            )
+          );
+
+          card.appendChild(top);
+          card.appendChild(value);
+          card.appendChild(meta);
+          card.appendChild(bar);
+
+          grid.appendChild(card);
+        });
+    }
 
 
-    const books =
-      document.querySelector(
-        "#books"
+    function renderRules() {
+      const grid =
+        document.querySelector(
+          "#rules-grid"
+        );
+
+      const preferred = [
+        "Geografia",
+        "Storia",
+        "Matematica",
+        "Inglese",
+        "Tecnologia"
+      ];
+
+      grid.innerHTML = "";
+
+      preferred.forEach(
+        (subject, index) => {
+          if (!NOTES[subject]) {
+            return;
+          }
+
+          const card =
+            createElement(
+              "article",
+              "rule-card reveal"
+            );
+
+          card.style.setProperty(
+            "--delay",
+            (index * 55) + "ms"
+          );
+
+          card.appendChild(
+            createElement(
+              "span",
+              "rule-subject",
+              subject
+            )
+          );
+
+          card.appendChild(
+            createElement(
+              "p",
+              "",
+              NOTES[subject]
+            )
+          );
+
+          grid.appendChild(card);
+        }
+      );
+    }
+
+
+    function bookCard(book, index) {
+      const card =
+        createElement(
+          "article",
+          "book-card reveal"
+        );
+
+      card.dataset.subject =
+        book.subject;
+
+      card.style.setProperty(
+        "--delay",
+        ((index % 6) * 45) + "ms"
       );
 
-    books.innerHTML =
-      BOOKS
-        .map(book => `
-          <article class="book-card">
+      const top =
+        createElement(
+          "div",
+          "book-top"
+        );
 
-            <span class="subject">
-              ${book.subject}
-            </span>
+      const main =
+        createElement(
+          "div",
+          "book-main"
+        );
 
-            <div class="book-top">
+      main.appendChild(
+        createElement(
+          "span",
+          "subject",
+          book.subject
+        )
+      );
 
-              <div>
+      main.appendChild(
+        createElement(
+          "h3",
+          "",
+          book.title
+        )
+      );
 
-                <h3>
-                  ${book.title}
-                </h3>
+      main.appendChild(
+        createElement(
+          "p",
+          "book-subtitle",
+          book.subtitle
+        )
+      );
 
-                <p>
-                  ${book.subtitle}
-                </p>
+      main.appendChild(
+        createElement(
+          "p",
+          "book-publisher",
+          book.publisher
+        )
+      );
 
-                <p>
-                  ${book.publisher}
-                </p>
+      if (book.authors) {
+        main.appendChild(
+          createElement(
+            "p",
+            "book-authors",
+            book.authors
+          )
+        );
+      }
 
-                <p>
-                  ${book.authors || ""}
-                </p>
+      top.appendChild(main);
 
-              </div>
+      top.appendChild(
+        createElement(
+          "span",
+          "kg",
+          "~" +
+          book.estimatedCarryKg.toFixed(2) +
+          " kg"
+        )
+      );
 
-              <span class="kg">
-                ~${book.estimatedCarryKg.toFixed(2)} kg da portare
-              </span>
+      card.appendChild(top);
 
-            </div>
+      if (book.carryNote) {
+        const note =
+          createElement(
+            "div",
+            "carry-note",
+            book.carryNote
+          );
 
-            ${
-              book.carryNote
-                ? `
-                  <div class="carry-note ${
-                    book.subject === "Tecnologia" ||
-                    book.subject === "Matematica" ||
-                    book.subject === "Inglese"
-                      ? "is-caution"
-                      : ""
-                  }">
-                    ${book.carryNote}
-                    ${
-                      book.fullSetEstimatedKg
-                        ? ` · Set completo ~${book.fullSetEstimatedKg.toFixed(2)} kg`
-                        : ""
-                    }
-                  </div>
-                `
-                : ""
+        if (
+          book.subject ===
+            "Tecnologia" ||
+          book.subject ===
+            "Matematica" ||
+          book.subject ===
+            "Inglese"
+        ) {
+          note.classList.add(
+            "is-caution"
+          );
+        }
+
+        if (
+          book.fullSetEstimatedKg
+        ) {
+          note.textContent +=
+            " · Set completo ~" +
+            book.fullSetEstimatedKg
+              .toFixed(2) +
+            " kg";
+        }
+
+        card.appendChild(note);
+      }
+
+      card.appendChild(
+        createElement(
+          "div",
+          "isbn",
+          "ISBN " + book.isbn
+        )
+      );
+
+      return card;
+    }
+
+
+    function renderBooks() {
+      const books =
+        document.querySelector(
+          "#books"
+        );
+
+      const count =
+        document.querySelector(
+          "#books-count"
+        );
+
+      books.innerHTML = "";
+
+      BOOKS.forEach(
+        (book, index) => {
+          books.appendChild(
+            bookCard(
+              book,
+              index
+            )
+          );
+        }
+      );
+
+      count.textContent =
+        BOOKS.length +
+        (
+          BOOKS.length === 1
+            ? " adozione"
+            : " adozioni"
+        );
+    }
+
+
+    function renderFilters() {
+      const toolbar =
+        document.querySelector(
+          "#books-toolbar"
+        );
+
+      const subjects = [
+        "Tutti",
+        ...new Set(
+          BOOKS.map(
+            book =>
+              book.subject
+          )
+        )
+      ];
+
+      toolbar.innerHTML = "";
+
+      subjects.forEach(
+        (subject, index) => {
+          const button =
+            createElement(
+              "button",
+              "filter-chip",
+              subject
+            );
+
+          button.type =
+            "button";
+
+          if (index === 0) {
+            button.classList.add(
+              "is-active"
+            );
+          }
+
+          button.addEventListener(
+            "click",
+            () => {
+              toolbar
+                .querySelectorAll(
+                  ".filter-chip"
+                )
+                .forEach(item => {
+                  item.classList.remove(
+                    "is-active"
+                  );
+                });
+
+              button.classList.add(
+                "is-active"
+              );
+
+              document
+                .querySelectorAll(
+                  ".book-card"
+                )
+                .forEach(card => {
+                  const show =
+                    subject ===
+                      "Tutti" ||
+                    card.dataset.subject ===
+                      subject;
+
+                  card.hidden =
+                    !show;
+
+                  if (show) {
+                    card.classList.remove(
+                      "is-visible"
+                    );
+
+                    requestAnimationFrame(
+                      () => {
+                        card.classList.add(
+                          "is-visible"
+                        );
+                      }
+                    );
+                  }
+                });
             }
+          );
 
-            <div class="isbn">
-              ISBN ${book.isbn}
-            </div>
+          toolbar.appendChild(
+            button
+          );
+        }
+      );
+    }
 
-          </article>
-        `)
-        .join("");
+
+    function animateNumber(
+      element,
+      target
+    ) {
+      if (!element) {
+        return;
+      }
+
+      const duration =
+        720;
+
+      const start =
+        performance.now();
+
+      function frame(now) {
+        const progress =
+          Math.min(
+            1,
+            (now - start) /
+            duration
+          );
+
+        const eased =
+          1 -
+          Math.pow(
+            1 - progress,
+            3
+          );
+
+        element.textContent =
+          (
+            target *
+            eased
+          ).toFixed(1) +
+          " kg";
+
+        if (progress < 1) {
+          requestAnimationFrame(
+            frame
+          );
+        }
+      }
+
+      requestAnimationFrame(
+        frame
+      );
+    }
+
+
+    function setupReveal() {
+      const items =
+        document.querySelectorAll(
+          ".reveal"
+        );
+
+      if (
+        !("IntersectionObserver" in window)
+      ) {
+        items.forEach(
+          item =>
+            item.classList.add(
+              "is-visible"
+            )
+        );
+
+        return;
+      }
+
+      const observer =
+        new IntersectionObserver(
+          entries => {
+            entries.forEach(
+              entry => {
+                const el =
+                  entry.target;
+
+                if (
+                  entry.isIntersecting
+                ) {
+                  el.classList.add(
+                    "is-visible"
+                  );
+
+                  const value =
+                    el.querySelector(
+                      ".weight-value[data-target]"
+                    );
+
+                  if (value) {
+                    animateNumber(
+                      value,
+                      Number(
+                        value.dataset.target
+                      )
+                    );
+                  }
+                } else {
+                  el.classList.remove(
+                    "is-visible"
+                  );
+
+                  const value =
+                    el.querySelector(
+                      ".weight-value[data-target]"
+                    );
+
+                  if (value) {
+                    value.textContent =
+                      "0.0 kg";
+                  }
+                }
+              }
+            );
+          },
+          {
+            threshold: .12,
+            rootMargin:
+              "-5% 0px -7% 0px"
+          }
+        );
+
+      items.forEach(
+        item =>
+          observer.observe(item)
+      );
+    }
+
+
+    function startLoadAnimation() {
+      requestAnimationFrame(
+        () => {
+          document.body.classList.add(
+            "is-ready"
+          );
+
+          requestAnimationFrame(
+            () => {
+              const todayCard =
+                document.querySelector(
+                  "#today-card"
+                );
+
+              todayCard.classList.add(
+                "is-loaded"
+              );
+            }
+          );
+        }
+      );
+    }
+
+
+    renderToday();
+    renderWeights();
+    renderRules();
+    renderBooks();
+    renderFilters();
+    setupReveal();
+    startLoadAnimation();
   </script>
 
 </body>
