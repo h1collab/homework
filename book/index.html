@@ -342,6 +342,25 @@
       font-weight: 700;
     }
 
+    .carry-note {
+      margin-top: 12px;
+      padding: 10px 11px;
+
+      border-radius: 12px;
+
+      background: var(--green-soft);
+      color: #365f54;
+
+      font-size: 11px;
+      line-height: 1.5;
+      font-weight: 650;
+    }
+
+    .carry-note.is-caution {
+      background: var(--yellow-soft);
+      color: #6b5600;
+    }
+
     .isbn {
       margin-top: 12px;
       padding-top: 11px;
@@ -427,6 +446,8 @@
         inglese-francese, anno scolastico 2026/2027.
         I dati di adozione risultano aggiornati al 07/09/2026.
         I pesi restano stime pratiche e non valori ufficiali degli editori.
+        Le stime tengono conto di cosa viene effettivamente portato: Geografia e Storia solo volume 2;
+        Matematica e Inglese solo la parte prevista; Tecnologia normalmente solo il materiale indicato.
       </div>
 
 
@@ -655,10 +676,31 @@
               </div>
 
               <span class="kg">
-                ~${book.estimatedCarryKg.toFixed(2)} kg
+                ~${book.estimatedCarryKg.toFixed(2)} kg da portare
               </span>
 
             </div>
+
+            ${
+              book.carryNote
+                ? `
+                  <div class="carry-note ${
+                    book.subject === "Tecnologia" ||
+                    book.subject === "Matematica" ||
+                    book.subject === "Inglese"
+                      ? "is-caution"
+                      : ""
+                  }">
+                    ${book.carryNote}
+                    ${
+                      book.fullSetEstimatedKg
+                        ? ` · Set completo ~${book.fullSetEstimatedKg.toFixed(2)} kg`
+                        : ""
+                    }
+                  </div>
+                `
+                : ""
+            }
 
             <div class="isbn">
               ISBN ${book.isbn}
