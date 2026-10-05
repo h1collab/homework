@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <meta name="theme-color" content="#f7f7f4">
+
+  <title>Libri e zaino</title>
+
+  <style>
+    :root {
+      --bg: #f7f7f4;
+      --surface: #ffffff;
+      --surface-soft: #efefeb;
+      --text: #111111;
+      --muted: #6f6f69;
+      --line: #deded8;
+
+      --green: #10a37f;
+      --green-soft: #e7f5f0;
+
+      --yellow: #d6a20e;
+      --yellow-soft: #fff7d6;
+
+      --red: #d92d20;
+      --red-soft: #fff0ee;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+
+      background: var(--bg);
+      color: var(--text);
+
+      font-family:
+        Inter,
+        ui-sans-serif,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      width: min(940px, calc(100% - 28px));
+      margin: 0 auto;
+      padding-bottom: 80px;
+    }
+
+    .topbar {
+      min-height: 68px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      border-bottom: 1px solid var(--line);
+    }
+
+    .back {
+      color: var(--muted);
+
+      font-size: 13px;
+      font-weight: 650;
+
+      text-decoration: none;
+    }
+
+    .badge {
+      padding: 6px 10px;
+
+      border: 1px solid var(--line);
+      border-radius: 999px;
+
+      background: rgba(255,255,255,.72);
+      color: var(--muted);
+
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .hero {
+      padding: 58px 4px 34px;
+    }
+
+    .eyebrow {
+      margin-bottom: 13px;
+
+      color: var(--green);
+
+      font-size: 11px;
+      font-weight: 800;
+
+      letter-spacing: .08em;
+    }
+
+    h1 {
+      margin: 0;
+
+      max-width: 760px;
+
+      font-size: clamp(42px, 8vw, 68px);
+      line-height: .98;
+
+      font-weight: 640;
+
+      letter-spacing: -.05em;
+    }
+
+    .hero p {
+      max-width: 670px;
+
+      margin: 22px 0 0;
+
+      color: var(--muted);
+
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    .note {
+      margin-bottom: 18px;
+      padding: 16px 18px;
+
+      border: 1px solid #eadca2;
+      border-radius: 16px;
+
+      background: #fff8d9;
+      color: #675f3c;
+
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .section {
+      margin-top: 18px;
+      padding: 22px;
+
+      border: 1px solid var(--line);
+      border-radius: 24px;
+
+      background: var(--surface);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+
+      gap: 16px;
+
+      margin-bottom: 16px;
+    }
+
+    .section-kicker {
+      margin-bottom: 5px;
+
+      color: var(--green);
+
+      font-size: 10px;
+      font-weight: 800;
+
+      letter-spacing: .08em;
+    }
+
+    .section h2 {
+      margin: 0;
+
+      font-size: 23px;
+      line-height: 1.15;
+
+      letter-spacing: -.03em;
+    }
+
+    .section-sub {
+      color: var(--muted);
+
+      font-size: 12px;
+    }
+
+    .weight-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+      gap: 8px;
+    }
+
+    .weight-card {
+      padding: 14px;
+
+      border: 1px solid var(--line);
+      border-radius: 16px;
+
+      background: #fafaf8;
+    }
+
+    .weight-card strong {
+      display: block;
+
+      margin-bottom: 8px;
+
+      font-size: 12px;
+    }
+
+    .weight-value {
+      font-size: 22px;
+      font-weight: 680;
+
+      letter-spacing: -.04em;
+    }
+
+    .weight-meta {
+      margin-top: 4px;
+
+      color: var(--muted);
+
+      font-size: 10px;
+    }
+
+    .weight-bar {
+      height: 6px;
+
+      margin-top: 12px;
+
+      border-radius: 999px;
+
+      background: var(--surface-soft);
+
+      overflow: hidden;
+    }
+
+    .weight-fill {
+      height: 100%;
+
+      border-radius: inherit;
+    }
+
+    .level-light .weight-fill {
+      background: var(--green);
+    }
+
+    .level-medium .weight-fill {
+      background: var(--yellow);
+    }
+
+    .level-heavy .weight-fill {
+      background: var(--red);
+    }
+
+    .books {
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+      gap: 10px;
+    }
+
+    .book-card {
+      padding: 17px;
+
+      border: 1px solid var(--line);
+      border-radius: 18px;
+
+      background: #fafaf8;
+    }
+
+    .book-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      gap: 14px;
+    }
+
+    .subject {
+      display: inline-flex;
+
+      margin-bottom: 10px;
+      padding: 5px 8px;
+
+      border-radius: 999px;
+
+      background: var(--green-soft);
+      color: #08765b;
+
+      font-size: 10px;
+      font-weight: 750;
+
+      text-transform: uppercase;
+    }
+
+    .book-card h3 {
+      margin: 0;
+
+      font-size: 16px;
+      line-height: 1.3;
+    }
+
+    .book-card p {
+      margin: 7px 0 0;
+
+      color: var(--muted);
+
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .kg {
+      flex: 0 0 auto;
+
+      padding: 5px 8px;
+
+      border-radius: 999px;
+
+      background: var(--surface-soft);
+      color: var(--muted);
+
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .isbn {
+      margin-top: 12px;
+      padding-top: 11px;
+
+      border-top: 1px solid var(--line);
+
+      color: #8b8b85;
+
+      font-size: 10px;
+    }
+
+    @media (max-width: 760px) {
+      .weight-grid {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+      }
+
+      .books {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .section {
+        padding: 17px;
+
+        border-radius: 20px;
+      }
+
+      .weight-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page">
+
+    <header class="topbar">
+
+      <a
+        class="back"
+        href="../"
+      >
+        ← Compiti
+      </a>
+
+      <span class="badge">
+        LIBRI
+      </span>
+
+    </header>
+
+
+    <main>
+
+      <section class="hero">
+
+        <div class="eyebrow">
+          LIBRI · ZAINO
+        </div>
+
+        <h1>
+          Cosa portare,
+          con meno peso.
+        </h1>
+
+        <p>
+          Elenco di riferimento dei libri
+          e stima del peso dello zaino
+          per ogni giorno della settimana.
+        </p>
+
+      </section>
+
+
+      <div class="note">
+        I titoli e gli ISBN derivano da un elenco pubblico di adozioni 2026/27
+        che corrisponde alla combinazione Inglese/Francese.
+        Verifica sempre la tua sezione.
+        I pesi sono stime pratiche, non valori ufficiali degli editori.
+      </div>
+
+
+      <section class="section">
+
+        <div class="section-head">
+
+          <div>
+            <div class="section-kicker">
+              SETTIMANA
+            </div>
+
+            <h2>
+              Peso stimato dello zaino
+            </h2>
+          </div>
+
+          <div class="section-sub">
+            libri + materiale base
+          </div>
+
+        </div>
+
+        <div
+          class="weight-grid"
+          id="weight-grid"
+        ></div>
+
+      </section>
+
+
+      <section class="section">
+
+        <div class="section-head">
+
+          <div>
+            <div class="section-kicker">
+              ELENCO
+            </div>
+
+            <h2>
+              Libri
+            </h2>
+          </div>
+
+          <div class="section-sub">
+            ISBN inclusi
+          </div>
+
+        </div>
+
+        <div
+          class="books"
+          id="books"
+        ></div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+  <script>
+    const bust = Date.now();
+
+    document.write(
+      `<script src="../orario.js?v=${bust}"><\/script>`
+    );
+
+    document.write(
+      `<script src="../book-data.js?v=${bust}"><\/script>`
+    );
+  </script>
+
+
+  <script>
+    const BOOKS =
+      Array.isArray(window.BOOK_DATA)
+        ? window.BOOK_DATA
+        : [];
+
+    const WEIGHTS =
+      window.SUBJECT_CARRY_WEIGHT || {};
+
+    const META =
+      window.BAG_ESTIMATE_META || {
+        baseKg: 0.9
+      };
+
+    const TIMETABLE =
+      window.TIMETABLE_DATA || {};
+
+
+    function level(weight) {
+      if (weight <= 4) {
+        return "light";
+      }
+
+      if (weight <= 4.8) {
+        return "medium";
+      }
+
+      return "heavy";
+    }
+
+
+    function dayWeight(day) {
+      const data =
+        TIMETABLE[day];
+
+      if (!data) {
+        return 0;
+      }
+
+      const unique =
+        [...new Set(
+          data.lessons
+            .filter(Boolean)
+            .filter(
+              subject =>
+                subject !== "Prolungamento"
+            )
+        )];
+
+      return unique.reduce(
+        (total, subject) =>
+          total +
+          (WEIGHTS[subject] || 0),
+        META.baseKg || 0.9
+      );
+    }
+
+
+    const dayNames = {
+      1: "Lunedì",
+      2: "Martedì",
+      3: "Mercoledì",
+      4: "Giovedì",
+      5: "Venerdì"
+    };
+
+
+    const grid =
+      document.querySelector(
+        "#weight-grid"
+      );
+
+    grid.innerHTML =
+      [1, 2, 3, 4, 5]
+        .map(day => {
+          const kg =
+            dayWeight(day);
+
+          const weightLevel =
+            level(kg);
+
+          const width =
+            Math.min(
+              100,
+              (kg / 6) * 100
+            );
+
+          return `
+            <article class="weight-card level-${weightLevel}">
+
+              <strong>
+                ${dayNames[day]}
+              </strong>
+
+              <div class="weight-value">
+                ${kg.toFixed(1)} kg
+              </div>
+
+              <div class="weight-meta">
+                stima
+              </div>
+
+              <div class="weight-bar">
+                <div
+                  class="weight-fill"
+                  style="width:${width}%"
+                ></div>
+              </div>
+
+            </article>
+          `;
+        })
+        .join("");
+
+
+    const books =
+      document.querySelector(
+        "#books"
+      );
+
+    books.innerHTML =
+      BOOKS
+        .map(book => `
+          <article class="book-card">
+
+            <span class="subject">
+              ${book.subject}
+            </span>
+
+            <div class="book-top">
+
+              <div>
+
+                <h3>
+                  ${book.title}
+                </h3>
+
+                <p>
+                  ${book.subtitle}
+                </p>
+
+                <p>
+                  ${book.publisher}
+                </p>
+
+              </div>
+
+              <span class="kg">
+                ~${book.estimatedCarryKg.toFixed(2)} kg
+              </span>
+
+            </div>
+
+            <div class="isbn">
+              ISBN ${book.isbn}
+            </div>
+
+          </article>
+        `)
+        .join("");
+  </script>
+
+</body>
+</html>
