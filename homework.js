@@ -70,6 +70,17 @@ window.HOMEWORK_DATA = [
   },
 
   /* =========================
+     6 OTTOBRE
+     ========================= */
+
+  {
+    date: "2026-10-06",
+    subject: "Inglese",
+    title: "Pagina 187",
+    details: "Completare tutti gli esercizi a pagina 187."
+  },
+
+  /* =========================
      8 OTTOBRE
      ========================= */
 
