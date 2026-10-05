@@ -15,7 +15,8 @@ window.BOOK_DATA = [
     isbn: "9788807593864",
     publisher: "Feltrinelli",
     authors: "Miglino M. - Giardina E. - Delucchi F.",
-    estimatedCarryKg: 0.85
+    estimatedCarryKg: 0.55,
+    carryNote: "Da portare: solo Volume 2."
   },
   {
     subject: "Italiano",
@@ -42,7 +43,8 @@ window.BOOK_DATA = [
     isbn: "9780194088039",
     publisher: "Oxford University Press",
     authors: "AA. VV.",
-    estimatedCarryKg: 0.65
+    estimatedCarryKg: 0.45,
+    carryNote: "Da portare: solo la parte indicata per la lezione, non tutto il set."
   },
   {
     subject: "Matematica",
@@ -51,7 +53,8 @@ window.BOOK_DATA = [
     isbn: "9788891567475",
     publisher: "Fabbri Scuola",
     authors: "Ferri L. - Matteo A. - Pellegrino E.",
-    estimatedCarryKg: 1.10
+    estimatedCarryKg: 0.55,
+    carryNote: "Da portare: una sola parte in base alla lezione (Aritmetica 2 oppure Geometria 2; quaderno solo se richiesto)."
   },
   {
     subject: "Religione",
@@ -87,7 +90,8 @@ window.BOOK_DATA = [
     isbn: "9788891574480",
     publisher: "Fabbri Scuola",
     authors: "Biggio Barbara",
-    estimatedCarryKg: 0.70
+    estimatedCarryKg: 0.70,
+    carryNote: "Da portare: solo Volume 2."
   },
   {
     subject: "Tecnologia",
@@ -96,24 +100,26 @@ window.BOOK_DATA = [
     isbn: "9788869175169",
     publisher: "Lattes",
     authors: "Arduino Gianni",
-    estimatedCarryKg: 0.80
+    estimatedCarryKg: 0.45,
+    fullSetEstimatedKg: 0.80,
+    carryNote: "Di solito non serve tutto il set: porta solo il materiale indicato. Se non sei sicuro, per sicurezza porta tutto."
   }
 ];
 
 window.SUBJECT_CARRY_WEIGHT = {
   "Arte": 0.75,
-  "Geografia": 0.85,
+  "Geografia": 0.55,
   "Italiano": 1.05,
-  "Inglese": 0.65,
+  "Inglese": 0.45,
   "Aritmetica": 0.55,
   "Geometria": 0.55,
-  "Matematica": 0.60,
+  "Matematica": 0.55,
   "Musica": 0.00,
   "Religione": 0.65,
   "Scienze": 0.85,
   "Francese": 0.75,
   "Storia": 0.70,
-  "Tecnologia": 0.80,
+  "Tecnologia": 0.45,
   "Motoria": 0.65
 };
 
@@ -128,4 +134,15 @@ window.BAG_ESTIMATE_META = {
   course: "36 ore tempo prolungato (inglese-francese)",
   schoolYear: "2026/2027",
   adoptionDataUpdated: "07/09/2026"
+};
+
+
+window.SUBJECT_CARRY_NOTE = {
+  "Geografia": "Solo Volume 2",
+  "Storia": "Solo Volume 2",
+  "Aritmetica": "Solo la parte prevista",
+  "Geometria": "Solo la parte prevista",
+  "Matematica": "Parte 1 o 2 secondo la lezione",
+  "Inglese": "Parte 1 o 2 secondo la lezione",
+  "Tecnologia": "Solo il materiale indicato; se hai dubbi, porta tutto"
 };
