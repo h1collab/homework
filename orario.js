@@ -32,7 +32,7 @@ window.TIMETABLE_DATA = {
   2: {
     day: "Martedì",
     lessons: [
-      "Matematica",
+      "Francese",
       "Motoria",
       "Motoria",
       "Italiano",
