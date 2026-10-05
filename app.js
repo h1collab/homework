@@ -1328,7 +1328,8 @@ function render() {
 
           <header class="homework-day-header">
 
-            <div>
+            <div class="homework-day-title">
+
               <div class="homework-day-kicker">
                 ${relativeLabel(date)}
               </div>
@@ -1336,10 +1337,11 @@ function render() {
               <h2>
                 ${formatLongDate(date)}
               </h2>
+
             </div>
 
             <span class="homework-day-count">
-              ${items.length}
+              <strong>${items.length}</strong>
               ${items.length === 1 ? "compito" : "compiti"}
             </span>
 
@@ -1348,60 +1350,97 @@ function render() {
           <div class="homework-items">
 
             ${items.map(
-              (item, index) => `
-                <article class="homework-item">
+              (item, index) => {
+                const subject =
+                  normalizeSubject(
+                    item.subject
+                  );
 
-                  <div class="homework-item-number">
-                    ${index + 1}
-                  </div>
+                return `
+                  <article
+                    class="homework-item"
+                    style="--homework-delay:${index * 55}ms"
+                  >
 
-                  <div class="homework-item-content">
+                    <div
+                      class="homework-item-accent"
+                      aria-hidden="true"
+                    ></div>
 
-                    <div class="homework-item-top">
+                    <div class="homework-item-content">
 
-                      <span class="homework-subject">
+                      <div class="homework-item-meta">
+
+                        <span class="homework-subject">
+                          ${escapeHtml(subject)}
+                        </span>
+
+                        <span class="homework-item-label">
+                          COMPITO
+                        </span>
+
+                      </div>
+
+                      <div class="homework-item-heading">
+
+                        <h3>
+                          ${escapeHtml(
+                            item.title
+                          )}
+                        </h3>
+
+                        <span
+                          class="homework-item-index"
+                          aria-hidden="true"
+                        >
+                          ${String(index + 1).padStart(2, "0")}
+                        </span>
+
+                      </div>
+
+                      <p>
                         ${escapeHtml(
-                          normalizeSubject(
-                            item.subject
-                          )
+                          item.details
                         )}
-                      </span>
+                      </p>
 
-                      <h3>
-                        ${escapeHtml(
-                          item.title
-                        )}
-                      </h3>
+                      ${
+                        item.href
+                          ? `
+                            <a
+                              class="homework-action"
+                              href="${escapeHtml(item.href)}"
+                            >
+                              <span>
+                                ${escapeHtml(
+                                  item.actionLabel ||
+                                  "Apri"
+                                )}
+                              </span>
+
+                              <svg
+                                viewBox="0 0 20 20"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  d="M5 10h9M11 6l4 4-4 4"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
+                            </a>
+                          `
+                          : ""
+                      }
 
                     </div>
 
-                    <p>
-                      ${escapeHtml(
-                        item.details
-                      )}
-                    </p>
-
-                    ${
-                      item.href
-                        ? `
-                          <a
-                            class="homework-action"
-                            href="${escapeHtml(item.href)}"
-                          >
-                            ${escapeHtml(
-                              item.actionLabel ||
-                              "Apri"
-                            )}
-                            <span aria-hidden="true">→</span>
-                          </a>
-                        `
-                        : ""
-                    }
-
-                  </div>
-
-                </article>
-              `
+                  </article>
+                `;
+              }
             ).join("")}
 
           </div>
