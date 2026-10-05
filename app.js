@@ -855,7 +855,7 @@ function renderSchedule() {
         );
 
       renderSchedule();
-      renderBagSummary();
+      renderBagSummary(true);
     }
   );
 
@@ -872,7 +872,7 @@ function renderSchedule() {
         );
 
       renderSchedule();
-      renderBagSummary();
+      renderBagSummary(true);
     }
   );
 
@@ -884,7 +884,6 @@ function renderSchedule() {
         !state.carryOpen;
 
       renderSchedule();
-      renderBagSummary();
     }
   );
 
@@ -896,7 +895,7 @@ function renderSchedule() {
         TODAY_ISO;
 
       renderSchedule();
-      renderBagSummary();
+      renderBagSummary(true);
     }
   );
 
@@ -960,7 +959,7 @@ function renderSchedule() {
         }
 
         renderSchedule();
-        renderBagSummary();
+        renderBagSummary(true);
       },
       {
         passive: true
@@ -1043,7 +1042,9 @@ function bagWeightForDate(value) {
 }
 
 
-function renderBagSummary() {
+function renderBagSummary(
+  animate = true
+) {
   if (!els.bag) {
     return;
   }
@@ -1064,15 +1065,192 @@ function renderBagSummary() {
   const level =
     bagLevel(data.kg);
 
+  const fillPercent =
+    Math.max(
+      14,
+      Math.min(
+        94,
+        Math.round(
+          (data.kg / 6) * 100
+        )
+      )
+    );
+
+  const innerTop = 31;
+  const innerBottom = 96;
+  const innerHeight =
+    innerBottom - innerTop;
+
+  const fillHeight =
+    Math.max(
+      8,
+      innerHeight *
+      (fillPercent / 100)
+    );
+
+  const fillY =
+    innerBottom -
+    fillHeight;
+
+  const hasCarryNote =
+    data.subjects.some(
+      subject =>
+        SUBJECT_CARRY_NOTE[
+          subject
+        ]
+    );
+
+  const animationClass =
+    animate
+      ? "is-filling"
+      : "";
+
   els.bag.innerHTML = `
     <a
-      class="bag-card bag-${level.key}"
+      class="bag-card bag-${level.key} ${animationClass}"
       href="./book/"
+      style="--bag-meter:${fillPercent}%"
+      aria-label="Apri libri e stima dello zaino"
     >
 
-      <div class="bag-icon">
-        🎒
+      <div
+        class="bag-scale"
+        aria-hidden="true"
+      >
+        <div class="bag-scale-caption">
+          0
+        </div>
+
+        <div class="bag-scale-track">
+          <span class="bag-scale-tick"></span>
+          <span class="bag-scale-tick"></span>
+          <span class="bag-scale-tick"></span>
+          <span class="bag-scale-tick"></span>
+          <span class="bag-scale-tick"></span>
+          <span class="bag-scale-tick"></span>
+          <span class="bag-scale-tick"></span>
+
+          <span class="bag-scale-progress"></span>
+          <span class="bag-scale-marker"></span>
+        </div>
+
+        <div class="bag-scale-caption">
+          6 kg
+        </div>
       </div>
+
+
+      <div class="bag-visual">
+
+        <svg
+          class="bag-svg"
+          viewBox="0 0 110 126"
+          role="img"
+          aria-label="Indicatore grafico del peso dello zaino"
+        >
+          <defs>
+            <clipPath id="bag-body-clip">
+              <path
+                d="M31 35
+                   C31 26 38 19 47 19
+                   H63
+                   C72 19 79 26 79 35
+                   V38
+                   H82
+                   C91 38 98 45 98 54
+                   V101
+                   C98 111 90 119 80 119
+                   H30
+                   C20 119 12 111 12 101
+                   V54
+                   C12 45 19 38 28 38
+                   H31
+                   Z"
+              />
+            </clipPath>
+          </defs>
+
+          <path
+            class="bag-empty"
+            d="M31 35
+               C31 26 38 19 47 19
+               H63
+               C72 19 79 26 79 35
+               V38
+               H82
+               C91 38 98 45 98 54
+               V101
+               C98 111 90 119 80 119
+               H30
+               C20 119 12 111 12 101
+               V54
+               C12 45 19 38 28 38
+               H31
+               Z"
+          />
+
+          <rect
+            class="bag-fill"
+            x="12"
+            y="${fillY.toFixed(2)}"
+            width="86"
+            height="${fillHeight.toFixed(2)}"
+            clip-path="url(#bag-body-clip)"
+          />
+
+          <path
+            class="bag-outline"
+            d="M31 35
+               C31 26 38 19 47 19
+               H63
+               C72 19 79 26 79 35
+               V38
+               H82
+               C91 38 98 45 98 54
+               V101
+               C98 111 90 119 80 119
+               H30
+               C20 119 12 111 12 101
+               V54
+               C12 45 19 38 28 38
+               H31
+               Z"
+          />
+
+          <path
+            class="bag-outline bag-handle"
+            d="M42 38
+               V32
+               C42 28 45 25 49 25
+               H61
+               C65 25 68 28 68 32
+               V38"
+          />
+
+          <path
+            class="bag-outline bag-pocket-line"
+            d="M31 72
+               H79
+               V92
+               C79 97 75 101 70 101
+               H40
+               C35 101 31 97 31 92
+               Z"
+          />
+
+          <path
+            class="bag-outline bag-pocket-line"
+            d="M47 72
+               V67
+               C47 64 49 62 52 62
+               H58
+               C61 62 63 64 63 67
+               V72"
+          />
+        </svg>
+
+      </div>
+
 
       <div class="bag-content">
 
@@ -1097,13 +1275,10 @@ function renderBagSummary() {
         </p>
 
         ${
-          data.subjects.some(
-            subject =>
-              SUBJECT_CARRY_NOTE[subject]
-          )
+          hasCarryNote
             ? `
               <div class="bag-hint">
-                Peso calcolato sul materiale da portare,
+                Calcolato sul materiale da portare,
                 non sul set completo.
               </div>
             `
@@ -1112,8 +1287,21 @@ function renderBagSummary() {
 
       </div>
 
-      <div class="bag-arrow">
-        →
+
+      <div class="bag-link-arrow">
+        <svg
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+        >
+          <path
+            d="M5 10h9M11 6l4 4-4 4"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
       </div>
 
     </a>
@@ -1266,7 +1454,7 @@ function getFilteredHomework() {
 
 function render() {
   renderSchedule();
-  renderBagSummary();
+  renderBagSummary(true);
   renderNotices();
 
   const filtered =
