@@ -19,6 +19,9 @@ const ALL_SUBJECTS =
 const SUBJECT_CARRY_WEIGHT =
   window.SUBJECT_CARRY_WEIGHT || {};
 
+const SUBJECT_CARRY_NOTE =
+  window.SUBJECT_CARRY_NOTE || {};
+
 const BAG_ESTIMATE_META =
   window.BAG_ESTIMATE_META || {
     baseKg: 0.9
@@ -1092,6 +1095,20 @@ function renderBagSummary() {
         <p>
           ${data.subjects.join(" · ")}
         </p>
+
+        ${
+          data.subjects.some(
+            subject =>
+              SUBJECT_CARRY_NOTE[subject]
+          )
+            ? `
+              <div class="bag-hint">
+                Peso calcolato sul materiale da portare,
+                non sul set completo.
+              </div>
+            `
+            : ""
+        }
 
       </div>
 
