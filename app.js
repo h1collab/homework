@@ -115,7 +115,6 @@ const state = {
 
   weekOffset: 0,
 
-  carryDate: TODAY_ISO,
   carryOpen: false
 };
 
@@ -513,7 +512,17 @@ els.datePrev.addEventListener(
   "click",
   () => {
     state.weekOffset -= 1;
+
+    state.selectedDate =
+      toIsoDate(
+        getWeekStart()
+      );
+
+    state.dateMode =
+      "date";
+
     buildDateStrip();
+    render();
   }
 );
 
@@ -522,37 +531,24 @@ els.dateNext.addEventListener(
   "click",
   () => {
     state.weekOffset += 1;
+
+    state.selectedDate =
+      toIsoDate(
+        getWeekStart()
+      );
+
+    state.dateMode =
+      "date";
+
     buildDateStrip();
+    render();
   }
 );
 
 
 /* =========================================================
-   COSA PORTARE
+   COSA PORTARE - STESSA DATA DEI COMPITI
    ========================================================= */
-
-function schoolDayMove(
-  value,
-  direction
-) {
-  let date =
-    parseIsoDate(value);
-
-  do {
-    date =
-      addDays(
-        date,
-        direction
-      );
-  }
-  while (
-    date.getDay() === 0 ||
-    date.getDay() === 6
-  );
-
-  return toIsoDate(date);
-}
-
 
 function uniqueLessons(lessons) {
   return [
@@ -577,7 +573,7 @@ function renderSchedule() {
 
   const selectedDate =
     parseIsoDate(
-      state.carryDate
+      state.selectedDate
     );
 
   const weekday =
@@ -587,7 +583,7 @@ function renderSchedule() {
     TIMETABLE[weekday];
 
   const isToday =
-    state.carryDate ===
+    state.selectedDate ===
     TODAY_ISO;
 
   const dayName =
@@ -610,7 +606,7 @@ function renderSchedule() {
     collapsedSummary = `
       <div class="carry-preview">
         ${unique
-          .slice(0, 4)
+          .slice(0, 5)
           .map(
             subject => `
               <span>
@@ -621,10 +617,18 @@ function renderSchedule() {
           .join("")}
 
         ${
-          unique.length > 4
-            ? `<span>+${unique.length - 4}</span>`
+          unique.length > 5
+            ? `<span>+${unique.length - 5}</span>`
             : ""
         }
+      </div>
+    `;
+  } else {
+    collapsedSummary = `
+      <div class="carry-preview">
+        <span>
+          Nessuna lezione prevista
+        </span>
       </div>
     `;
   }
@@ -637,7 +641,7 @@ function renderSchedule() {
       details = `
         <div class="carry-details">
           <div class="carry-empty">
-            Nessuna lezione prevista.
+            Nessuna lezione prevista per questa data.
           </div>
         </div>
       `;
@@ -692,21 +696,42 @@ function renderSchedule() {
 
   els.schedule.innerHTML = `
     <section
-      class="carry-card"
+      class="carry-card carry-card-unified"
       id="carry-card"
     >
 
-      <div class="carry-main-row">
+      <button
+        type="button"
+        class="carry-center carry-center-unified"
+        id="carry-toggle"
+        aria-expanded="${state.carryOpen}"
+      >
 
-        <button
-          type="button"
-          class="carry-arrow"
-          id="carry-prev"
-          aria-label="Giorno precedente"
-        >
-          <svg viewBox="0 0 20 20">
+        <div class="carry-kicker">
+          COSA PORTARE · DATA SELEZIONATA
+        </div>
+
+        <div class="carry-title-row">
+
+          <h2>
+            ${
+              isToday
+                ? "Oggi"
+                : escapeHtml(dayName)
+            }
+          </h2>
+
+          <svg
+            class="carry-chevron ${
+              state.carryOpen
+                ? "is-open"
+                : ""
+            }"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+          >
             <path
-              d="M12 5 7 10l5 5"
+              d="M5 7.5 10 12.5 15 7.5"
               fill="none"
               stroke="currentColor"
               stroke-width="1.6"
@@ -714,102 +739,24 @@ function renderSchedule() {
               stroke-linejoin="round"
             />
           </svg>
-        </button>
 
+        </div>
 
-        <button
-          type="button"
-          class="carry-center"
-          id="carry-toggle"
-          aria-expanded="${state.carryOpen}"
-        >
+        <div class="carry-date">
+          ${escapeHtml(
+            formatCarryDate(
+              state.selectedDate
+            )
+          )}
+        </div>
 
-          <div class="carry-kicker">
-            COSA PORTARE
-          </div>
+        ${
+          !state.carryOpen
+            ? collapsedSummary
+            : ""
+        }
 
-          <div class="carry-title-row">
-
-            <h2>
-              ${
-                isToday
-                  ? "Oggi"
-                  : escapeHtml(dayName)
-              }
-            </h2>
-
-            <svg
-              class="carry-chevron ${
-                state.carryOpen
-                  ? "is-open"
-                  : ""
-              }"
-              viewBox="0 0 20 20"
-            >
-              <path
-                d="M5 7.5 10 12.5 15 7.5"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-
-          </div>
-
-          <div class="carry-date">
-            ${escapeHtml(
-              formatCarryDate(
-                state.carryDate
-              )
-            )}
-          </div>
-
-          ${
-            !state.carryOpen
-              ? collapsedSummary
-              : ""
-          }
-
-        </button>
-
-
-        <button
-          type="button"
-          class="carry-arrow"
-          id="carry-next"
-          aria-label="Giorno successivo"
-        >
-          <svg viewBox="0 0 20 20">
-            <path
-              d="m8 5 5 5-5 5"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </button>
-
-      </div>
-
-
-      ${
-        !isToday
-          ? `
-            <button
-              id="carry-today"
-              class="carry-today"
-              type="button"
-            >
-              Torna a oggi
-            </button>
-          `
-          : ""
-      }
-
+      </button>
 
       ${details}
 
@@ -817,65 +764,10 @@ function renderSchedule() {
   `;
 
 
-  const prev =
-    document.querySelector(
-      "#carry-prev"
-    );
-
-  const next =
-    document.querySelector(
-      "#carry-next"
-    );
-
   const toggle =
     document.querySelector(
       "#carry-toggle"
     );
-
-  const today =
-    document.querySelector(
-      "#carry-today"
-    );
-
-  const card =
-    document.querySelector(
-      "#carry-card"
-    );
-
-
-  prev?.addEventListener(
-    "click",
-    event => {
-      event.stopPropagation();
-
-      state.carryDate =
-        schoolDayMove(
-          state.carryDate,
-          -1
-        );
-
-      renderSchedule();
-      renderBagSummary(true);
-    }
-  );
-
-
-  next?.addEventListener(
-    "click",
-    event => {
-      event.stopPropagation();
-
-      state.carryDate =
-        schoolDayMove(
-          state.carryDate,
-          1
-        );
-
-      renderSchedule();
-      renderBagSummary(true);
-    }
-  );
-
 
   toggle?.addEventListener(
     "click",
@@ -886,86 +778,6 @@ function renderSchedule() {
       renderSchedule();
     }
   );
-
-
-  today?.addEventListener(
-    "click",
-    () => {
-      state.carryDate =
-        TODAY_ISO;
-
-      renderSchedule();
-      renderBagSummary(true);
-    }
-  );
-
-
-  if (card) {
-    let touchStartX = 0;
-    let touchStartY = 0;
-
-    card.addEventListener(
-      "touchstart",
-      event => {
-        const touch =
-          event.changedTouches[0];
-
-        touchStartX =
-          touch.clientX;
-
-        touchStartY =
-          touch.clientY;
-      },
-      {
-        passive: true
-      }
-    );
-
-
-    card.addEventListener(
-      "touchend",
-      event => {
-        const touch =
-          event.changedTouches[0];
-
-        const deltaX =
-          touch.clientX -
-          touchStartX;
-
-        const deltaY =
-          touch.clientY -
-          touchStartY;
-
-        if (
-          Math.abs(deltaX) < 55 ||
-          Math.abs(deltaX) <
-          Math.abs(deltaY)
-        ) {
-          return;
-        }
-
-        if (deltaX < 0) {
-          state.carryDate =
-            schoolDayMove(
-              state.carryDate,
-              1
-            );
-        } else {
-          state.carryDate =
-            schoolDayMove(
-              state.carryDate,
-              -1
-            );
-        }
-
-        renderSchedule();
-        renderBagSummary(true);
-      },
-      {
-        passive: true
-      }
-    );
-  }
 }
 
 
@@ -1051,7 +863,7 @@ function renderBagSummary(
 
   const data =
     bagWeightForDate(
-      state.carryDate
+      state.selectedDate
     );
 
   if (!data.subjects.length) {
