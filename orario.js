@@ -6,6 +6,7 @@ window.ALL_SUBJECTS = [
   "Inglese",
   "Francese",
   "Storia",
+  "Scienze",
   "Geografia",
   "Arte",
   "Musica",
