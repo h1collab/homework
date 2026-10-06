@@ -22,6 +22,9 @@ const SUBJECT_CARRY_WEIGHT =
 const SUBJECT_CARRY_NOTE =
   window.SUBJECT_CARRY_NOTE || {};
 
+const DATE_CARRY_OVERRIDES =
+  window.DATE_CARRY_OVERRIDES || {};
+
 const BAG_ESTIMATE_META =
   window.BAG_ESTIMATE_META || {
     baseKg: 0.9
@@ -586,6 +589,19 @@ function renderSchedule() {
     state.selectedDate ===
     TODAY_ISO;
 
+  const carryOverride =
+    DATE_CARRY_OVERRIDES[
+      state.selectedDate
+    ] || null;
+
+  const specialCarry =
+    carryOverride &&
+    Array.isArray(
+      carryOverride.items
+    )
+      ? carryOverride.items
+      : [];
+
   const dayName =
     timetableDay
       ? timetableDay.day
@@ -751,6 +767,27 @@ function renderSchedule() {
         </div>
 
         ${
+          specialCarry.length
+            ? `
+              <div class="carry-specific">
+                ${specialCarry.map(
+                  item => `
+                    <div class="carry-specific-row">
+                      <span class="carry-specific-subject">
+                        ${escapeHtml(item.subject)}
+                      </span>
+                      <span class="carry-specific-text">
+                        ${escapeHtml(item.text)}
+                      </span>
+                    </div>
+                  `
+                ).join("")}
+              </div>
+            `
+            : ""
+        }
+
+        ${
           !state.carryOpen
             ? collapsedSummary
             : ""
@@ -817,7 +854,12 @@ function bagWeightForDate(value) {
   const timetableDay =
     TIMETABLE[day];
 
-  if (!timetableDay) {
+  const override =
+    DATE_CARRY_OVERRIDES[
+      value
+    ] || null;
+
+  if (!timetableDay && !override) {
     return {
       kg: 0,
       subjects: []
@@ -825,24 +867,68 @@ function bagWeightForDate(value) {
   }
 
   const subjects =
-    [...new Set(
-      timetableDay.lessons
-        .map(normalizeSubject)
-        .filter(Boolean)
-        .filter(
-          subject =>
-            subject !== "Prolungamento"
-        )
-    )];
+    timetableDay
+      ? [...new Set(
+          timetableDay.lessons
+            .map(normalizeSubject)
+            .filter(Boolean)
+            .filter(
+              subject =>
+                subject !==
+                "Prolungamento"
+            )
+        )]
+      : [];
+
+  if (
+    override &&
+    Array.isArray(
+      override.addSubjects
+    )
+  ) {
+    override.addSubjects
+      .map(normalizeSubject)
+      .filter(Boolean)
+      .forEach(subject => {
+        if (
+          !subjects.includes(
+            subject
+          )
+        ) {
+          subjects.push(
+            subject
+          );
+        }
+      });
+  }
+
+  const weightOverrides =
+    override &&
+    override.weightOverrides
+      ? override.weightOverrides
+      : {};
 
   const kg =
     subjects.reduce(
       (total, subject) =>
         total +
         (
-          SUBJECT_CARRY_WEIGHT[
-            subject
-          ] || 0
+          Object.prototype
+            .hasOwnProperty
+            .call(
+              weightOverrides,
+              subject
+            )
+            ? Number(
+                weightOverrides[
+                  subject
+                ]
+              ) || 0
+            : (
+                SUBJECT_CARRY_WEIGHT[
+                  subject
+                ] || 0
+              )
         ),
       BAG_ESTIMATE_META.baseKg || 0.9
     );
