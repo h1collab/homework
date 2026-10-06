@@ -4071,3 +4071,93 @@ body {
 }
 
 /* U22_HOMEWORK_PREMIUM_V2_END */
+
+
+/* U22_DATE_CARRY_SPECIAL_START */
+
+.carry-specific {
+  margin-top: 13px;
+
+  display: grid;
+  gap: 7px;
+}
+
+.carry-specific-row {
+  min-height: 38px;
+
+  padding: 9px 10px;
+
+  display: grid;
+  grid-template-columns:
+    auto minmax(0, 1fr);
+
+  align-items: center;
+
+  gap: 9px;
+
+  border:
+    1px solid rgba(16,163,127,.10);
+
+  border-radius:
+    12px;
+
+  background:
+    rgba(232,246,241,.62);
+}
+
+.carry-specific-subject {
+  padding:
+    4px 7px;
+
+  border-radius:
+    999px;
+
+  background:
+    rgba(255,255,255,.78);
+
+  color:
+    #08765b;
+
+  font-size:
+    9px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    .035em;
+
+  text-transform:
+    uppercase;
+}
+
+.carry-specific-text {
+  color:
+    #4f625c;
+
+  font-size:
+    10px;
+
+  font-weight:
+    650;
+
+  line-height:
+    1.45;
+}
+
+@media (max-width: 520px) {
+  .carry-specific-row {
+    grid-template-columns:
+      1fr;
+
+    gap:
+      6px;
+  }
+
+  .carry-specific-subject {
+    width:
+      fit-content;
+  }
+}
+
+/* U22_DATE_CARRY_SPECIAL_END */
