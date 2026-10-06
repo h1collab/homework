@@ -93,6 +93,13 @@ window.HOMEWORK_DATA = [
 
   {
     date: "2026-10-08",
+    subject: "Inglese",
+    title: "Pagina 190",
+    details: "Completare gli esercizi 4 e 5 a pagina 190."
+  },
+
+  {
+    date: "2026-10-08",
     subject: "Matematica",
     title: "Ripasso ed esercizi",
     details: "Ripassare sul quaderno: frazioni apparenti, miste, improprie, equivalenti e proprie. Completare a pagina 388 gli esercizi 18 e 22 e finire l'esercizio 21."
