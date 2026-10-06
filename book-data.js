@@ -146,3 +146,25 @@ window.SUBJECT_CARRY_NOTE = {
   "Inglese": "Parte 1 o 2 secondo la lezione",
   "Tecnologia": "Solo il materiale indicato; se hai dubbi, porta tutto"
 };
+
+
+window.DATE_CARRY_OVERRIDES = {
+  "2026-10-07": {
+    items: [
+      {
+        subject: "Geometria",
+        text: "Portare solo il quaderno."
+      },
+      {
+        subject: "Scienze",
+        text: "Portare il libro sul corpo umano e il quaderno."
+      }
+    ],
+    addSubjects: [
+      "Scienze"
+    ],
+    weightOverrides: {
+      "Geometria": 0
+    }
+  }
+};
