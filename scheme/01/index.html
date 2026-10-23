@@ -280,12 +280,395 @@
       .fork { height: 90px; }
       .branch-box { font-size: 15px; }
     }
+
+    /* ===== Study navigation / premium mobile layout ===== */
+    body {
+      background:
+        radial-gradient(circle at 50% -220px, rgba(32, 32, 39, .055), transparent 520px),
+        #f8f8f6;
+      font-family:
+        Inter,
+        ui-sans-serif,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        Helvetica,
+        sans-serif;
+    }
+
+    .study-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(32, 32, 39, .08);
+      background: rgba(248, 248, 246, .86);
+      backdrop-filter: blur(18px) saturate(145%);
+      -webkit-backdrop-filter: blur(18px) saturate(145%);
+    }
+
+    .study-header-inner {
+      width: min(100%, 1260px);
+      min-height: 72px;
+      margin: 0 auto;
+      padding: 10px 30px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: 20px;
+    }
+
+    .study-brand {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-link {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(32, 32, 39, .09);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .72);
+      color: #3d3d43;
+      text-decoration: none;
+      transition:
+        transform .16s ease,
+        background .16s ease,
+        border-color .16s ease;
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      background: #fff;
+      border-color: rgba(32, 32, 39, .14);
+    }
+
+    .back-link svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .study-title {
+      min-width: 0;
+    }
+
+    .study-title span {
+      display: block;
+      margin-bottom: 2px;
+      color: #8b8b91;
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: .12em;
+    }
+
+    .study-title strong {
+      display: block;
+      color: #202027;
+      font-size: 14px;
+      line-height: 1.2;
+      font-weight: 680;
+      letter-spacing: -.02em;
+    }
+
+    .study-nav {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 5px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .study-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .study-nav a {
+      flex: 0 0 auto;
+      padding: 8px 10px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      color: #707076;
+      font-size: 10px;
+      font-weight: 680;
+      text-decoration: none;
+      white-space: nowrap;
+      transition:
+        color .16s ease,
+        background .16s ease,
+        border-color .16s ease,
+        transform .16s ease;
+    }
+
+    .study-nav a:hover {
+      color: #202027;
+      background: rgba(255, 255, 255, .8);
+      border-color: rgba(32, 32, 39, .07);
+    }
+
+    .study-nav a.is-active {
+      color: #fff;
+      background: #202027;
+      border-color: #202027;
+    }
+
+    .chapter {
+      scroll-margin-top: 96px;
+    }
+
+    .mappa {
+      padding-top: 38px;
+    }
+
+    .box {
+      box-shadow:
+        0 1px 2px rgba(20, 20, 28, .025),
+        0 10px 28px rgba(20, 20, 28, .025);
+    }
+
+    .title-main {
+      box-shadow:
+        0 1px 2px rgba(20, 20, 28, .04),
+        0 16px 42px rgba(20, 20, 28, .055);
+    }
+
+    .example-box {
+      align-items: flex-start;
+      text-align: left;
+      background:
+        linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--box-bg) 90%, white),
+          var(--box-bg)
+        );
+    }
+
+    .example-box p {
+      width: 100%;
+    }
+
+    .example-label {
+      display: inline-flex;
+      margin-bottom: 8px;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .75);
+      color: #6d4d7f;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .example-note {
+      display: block;
+      margin-top: 9px;
+      padding-top: 9px;
+      border-top: 1px solid rgba(60, 35, 80, .10);
+      color: #6e6473;
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 550;
+    }
+
+    @media (max-width: 900px) {
+      .study-header-inner {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 9px 22px 10px;
+      }
+
+      .study-brand {
+        justify-content: space-between;
+      }
+
+      .study-nav {
+        justify-content: flex-start;
+        margin-inline: -2px;
+        padding-bottom: 1px;
+      }
+
+      .study-nav a {
+        padding: 7px 9px;
+      }
+
+      .chapter {
+        scroll-margin-top: 126px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .study-header-inner {
+        padding-inline: 14px;
+      }
+
+      .back-link {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+        border-radius: 11px;
+      }
+
+      .study-title strong {
+        font-size: 13px;
+      }
+
+      .study-nav {
+        gap: 4px;
+      }
+
+      .study-nav a {
+        padding: 7px 9px;
+        font-size: 9px;
+      }
+
+      .mappa {
+        padding-top: 26px;
+      }
+
+      .box {
+        box-shadow:
+          0 1px 2px rgba(20, 20, 28, .02),
+          0 7px 20px rgba(20, 20, 28, .02);
+      }
+
+      .title-main {
+        width: 100%;
+        max-width: 520px;
+        font-size: 27px;
+      }
+
+      .question {
+        width: min(100%, 360px);
+      }
+
+      .intro-text,
+      .body-box,
+      .branch-heading {
+        width: 100%;
+      }
+
+      .example-box {
+        width: 100%;
+        min-height: 0;
+        padding: 18px 18px;
+        font-size: 15px;
+      }
+
+      .example-note {
+        font-size: 12px;
+      }
+
+      .branches {
+        gap: 28px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .study-header-inner {
+        padding-inline: 10px;
+      }
+
+      .study-title span {
+        font-size: 7px;
+      }
+
+      .study-title strong {
+        font-size: 12px;
+      }
+
+      .mappa {
+        padding-inline: 11px;
+      }
+
+      .title-main {
+        font-size: 25px;
+        padding: 18px 18px;
+      }
+
+      .title-box,
+      .chapter--greimas .title-box {
+        width: min(100%, 360px);
+        font-size: 18px;
+        padding: 14px 16px;
+      }
+
+      .intro-text {
+        font-size: 17px;
+        padding: 22px 17px;
+      }
+
+      .body-box,
+      .branch-box,
+      .branches--discorso .branch-box {
+        font-size: 16px;
+        padding: 21px 17px;
+      }
+
+      .special-list {
+        padding-left: 24px;
+        font-size: 16px;
+      }
+
+      .stem--section {
+        height: 68px;
+      }
+    }
+
+    @media print {
+      .study-header {
+        display: none;
+      }
+    }
+
   </style>
 </head>
 <body>
+
+<header class="study-header" id="top">
+  <div class="study-header-inner">
+    <div class="study-brand">
+      <a class="back-link" href="../../" aria-label="Torna ai compiti">
+        <svg viewBox="0 0 20 20" aria-hidden="true">
+          <path
+            d="M12.5 4.5 7 10l5.5 5.5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </a>
+
+      <div class="study-title">
+        <span>SCHEMA 01</span>
+        <strong>Narratologia</strong>
+      </div>
+    </div>
+
+    <nav class="study-nav" aria-label="Indice della mappa">
+      <a href="#intro" data-section="intro">Inizio</a>
+      <a href="#fabula" data-section="fabula">Fabula</a>
+      <a href="#narratore" data-section="narratore">Narratore</a>
+      <a href="#focalizzazione" data-section="focalizzazione">Focalizzazione</a>
+      <a href="#tempo" data-section="tempo">Tempo</a>
+      <a href="#discorso" data-section="discorso">Discorso</a>
+      <a href="#greimas" data-section="greimas">Greimas</a>
+    </nav>
+  </div>
+</header>
+
 <main class="mappa" aria-label="Mappa completa di narratologia">
   <!-- TEORIA 1: NARRATOLOGIA -->
-  <section class="chapter chapter--intro" aria-label="Narratologia">
+  <section id="intro" class="chapter chapter--intro" aria-label="Narratologia">
     <h1 class="box gray title-box title-main">NARRATOLOGIA</h1>
     <span class="stem stem--small" aria-hidden="true"></span>
     <div class="question">Cos'&egrave;?</div>
@@ -298,7 +681,7 @@
   <span class="stem stem--section" aria-hidden="true"></span>
 
   <!-- TEORIA 2: FABULA, INTRECCIO E SALTI TEMPORALI -->
-  <section class="chapter chapter--green" aria-label="Gli elementi del racconto">
+  <section id="fabula" class="chapter chapter--green" aria-label="Gli elementi del racconto">
     <h2 class="box green title-box">Gli elementi del racconto</h2>
     <span class="stem stem--long" aria-hidden="true"></span>
     <div class="box green body-box">
@@ -316,7 +699,7 @@
   <span class="stem stem--section" aria-hidden="true"></span>
 
   <!-- TEORIA 3: NARRATORE -->
-  <section class="chapter chapter--narrator" aria-label="Narratore e focalizzazione">
+  <section id="narratore" class="chapter chapter--narrator" aria-label="Narratore e focalizzazione">
     <h2 class="box cyan title-box">Narratore e focalizzazione</h2>
     <span class="stem stem--long" aria-hidden="true"></span>
     <div class="box cyan body-box">
@@ -333,7 +716,7 @@
   <span class="stem stem--section" aria-hidden="true"></span>
 
   <!-- TEORIA 4: FOCALIZZAZIONE -->
-  <section class="chapter chapter--focalizzazione" aria-label="I tre tipi di focalizzazione">
+  <section id="focalizzazione" class="chapter chapter--focalizzazione" aria-label="I tre tipi di focalizzazione">
     <h2 class="box cyan branch-heading">Il punto di vista del narratore (<strong>FOCALIZZAZIONE</strong>) si divide principalmente in 3 categorie:</h2>
     <svg class="fork" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
       <defs>
@@ -368,7 +751,7 @@
   <span class="stem stem--section" aria-hidden="true"></span>
 
   <!-- TEORIA 5: TEMPO -->
-  <section class="chapter chapter--tempo" aria-label="Tempo della storia e tempo del racconto">
+  <section id="tempo" class="chapter chapter--tempo" aria-label="Tempo della storia e tempo del racconto">
     <h2 class="box pink title-box">Tempo</h2>
     <span class="stem stem--long" aria-hidden="true"></span>
     <div class="box pink body-box">
@@ -391,7 +774,7 @@
   <span class="stem stem--section" aria-hidden="true"></span>
 
   <!-- TEORIA 6: FORME DEL DISCORSO -->
-  <section class="chapter chapter--discorso" aria-label="Le forme del discorso">
+  <section id="discorso" class="chapter chapter--discorso" aria-label="Le forme del discorso">
     <h2 class="box purple title-box">Le forme del discorso</h2>
     <svg class="fork" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
       <defs>
@@ -408,7 +791,11 @@
         </div>
         <span class="stem example-stem" aria-hidden="true"></span>
         <div class="box purple example-box">
-          <p><strong>Esempio:</strong> Sara pens&ograve;: &laquo;Non superer&ograve; mai questo esame&raquo;.</p>
+          <p>
+            <span class="example-label">Esempio</span><br>
+            <strong>Sara disse:</strong> &laquo;Non riuscir&ograve; mai a superare questo esame&raquo;.
+            <span class="example-note">Le parole di Sara vengono riportate direttamente, tra virgolette.</span>
+          </p>
         </div>
       </div>
       <div class="branch-col">
@@ -417,7 +804,11 @@
         </div>
         <span class="stem example-stem" aria-hidden="true"></span>
         <div class="box purple example-box">
-          <p><strong>Esempio:</strong> Sara pens&ograve; che non avrebbe mai superato quell'esame.</p>
+          <p>
+            <span class="example-label">Esempio</span><br>
+            <strong>Sara disse che</strong> non sarebbe mai riuscita a superare quell'esame.
+            <span class="example-note">Il narratore riferisce il contenuto delle parole di Sara, adattandolo alla propria frase.</span>
+          </p>
         </div>
       </div>
       <div class="branch-col">
@@ -426,7 +817,11 @@
         </div>
         <span class="stem example-stem" aria-hidden="true"></span>
         <div class="box purple example-box">
-          <p><strong>Esempio:</strong> Sara fissava il foglio bianco con le mani tremanti. Non avrebbe mai superato quell'esame.</p>
+          <p>
+            <span class="example-label">Esempio</span><br>
+            Sara fissava il foglio bianco con le mani tremanti. <strong>Non avrebbe mai superato quell'esame.</strong>
+            <span class="example-note">Il pensiero di Sara entra nel racconto senza virgolette e senza una formula come “pens&ograve; che”.</span>
+          </p>
         </div>
       </div>
     </div>
@@ -435,7 +830,7 @@
   <span class="stem stem--section" aria-hidden="true"></span>
 
   <!-- TEORIA 7: MODELLO ATTANZIALE DI GREIMAS -->
-  <section class="chapter chapter--greimas" aria-label="I ruoli di Greimas e il modello attanziale">
+  <section id="greimas" class="chapter chapter--greimas" aria-label="I ruoli di Greimas e il modello attanziale">
     <h2 class="box orange title-box">I ruoli di Greimas<br>Il modello attanziale</h2>
     <span class="stem stem--long" aria-hidden="true"></span>
     <div class="box orange body-box">
@@ -456,5 +851,55 @@
     <div class="end-mark" aria-hidden="true"></div>
   </section>
 </main>
+
+<script>
+  (() => {
+    const nav = document.querySelector(".study-nav");
+    const links = [...document.querySelectorAll(".study-nav a[data-section]")];
+    const sections = links
+      .map(link => document.getElementById(link.dataset.section))
+      .filter(Boolean);
+
+    function setActive(id) {
+      links.forEach(link => {
+        const active = link.dataset.section === id;
+        link.classList.toggle("is-active", active);
+
+        if (active && nav) {
+          link.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "center"
+          });
+        }
+      });
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      setActive("intro");
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      entries => {
+        const visible = entries
+          .filter(entry => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (visible[0]) {
+          setActive(visible[0].target.id);
+        }
+      },
+      {
+        rootMargin: "-24% 0px -58% 0px",
+        threshold: [0.05, 0.2, 0.45]
+      }
+    );
+
+    sections.forEach(section => observer.observe(section));
+    setActive(location.hash ? location.hash.slice(1) : "intro");
+  })();
+</script>
+
 </body>
 </html>
