@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mappa completa di narratologia: fabula, intreccio, narratore, focalizzazione, tempo, forme del discorso e modello attanziale di Greimas.">
+  <title>Narratologia - Mappa completa</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #202027;
+      --line: #dce0e5;
+      --gray-bg: #eeeeef;
+      --gray-border: #303039;
+      --green-bg: #eef9ec;
+      --green-border: #71ce72;
+      --cyan-bg: #e9f8fd;
+      --cyan-border: #53c5e9;
+      --pink-bg: #fcebef;
+      --pink-border: #df2d60;
+      --purple-bg: #f8efff;
+      --purple-border: #9157b7;
+      --orange-bg: #fff9ec;
+      --orange-border: #efbd55;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+    .mappa {
+      width: min(100%, 1260px);
+      margin: 0 auto;
+      padding: 46px 30px 100px;
+      overflow: hidden;
+    }
+    h1.box, h2.box { margin-block: 0; }
+    .box {
+      border: 2px solid var(--box-border, var(--gray-border));
+      background: var(--box-bg, var(--gray-bg));
+      border-radius: 22px;
+      padding: 27px 34px;
+      margin-inline: auto;
+      color: #1c1e27;
+    }
+    .gray   { --box-bg: var(--gray-bg);   --box-border: var(--gray-border); }
+    .green  { --box-bg: var(--green-bg);  --box-border: var(--green-border); }
+    .cyan   { --box-bg: var(--cyan-bg);   --box-border: var(--cyan-border); }
+    .pink   { --box-bg: var(--pink-bg);   --box-border: var(--pink-border); }
+    .purple { --box-bg: var(--purple-bg); --box-border: var(--purple-border); }
+    .orange { --box-bg: var(--orange-bg); --box-border: var(--orange-border); }
+    .title-box {
+      width: fit-content;
+      max-width: 94%;
+      min-width: 260px;
+      text-align: center;
+      font-size: 23px;
+      line-height: 1.34;
+      font-weight: 750;
+      padding: 17px 33px;
+    }
+    .title-main {
+      min-width: 420px;
+      padding: 27px 52px;
+      font-size: 36px;
+      font-weight: 500;
+      border-width: 3px;
+      border-radius: 27px;
+    }
+    .question {
+      margin: 0 auto;
+      width: fit-content;
+      font-size: 23px;
+      font-weight: 400;
+      border: 2px solid #e3e5e9;
+      border-radius: 19px;
+      background: #fff;
+      padding: 14px 22px;
+      text-align: center;
+    }
+    .intro-text {
+      max-width: 785px;
+      font-size: 25px;
+      line-height: 1.5;
+      font-weight: 500;
+      text-align: center;
+      padding: 35px 43px;
+      border-width: 3px;
+    }
+    .body-box {
+      width: min(100%, 720px);
+      font-size: 20px;
+      line-height: 1.55;
+      font-weight: 600;
+      padding: 37px 40px;
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
+    .body-box p, .branch-box p, .example-box p { margin: 0; }
+    .body-box p + p, .branch-box p + p { margin-top: 10px; }
+    strong { font-weight: 750; }
+    em { font-style: italic; }
+    .stem {
+      display: block;
+      height: 86px;
+      width: 2px;
+      margin: 0 auto;
+      position: relative;
+      background: var(--line);
+    }
+    .stem::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: -5px;
+      border-top: 10px solid var(--line);
+      border-right: 6px solid transparent;
+      border-left: 6px solid transparent;
+      transform: translateY(8px);
+    }
+    .stem--small { height: 48px; }
+    .stem--long { height: 125px; }
+    .stem--section { height: 122px; }
+    .chapter { position: relative; }
+    .chapter--intro .stem--small { height: 46px; }
+    .chapter--intro .question + .stem { height: 57px; }
+    .chapter--green .body-box { max-width: 720px; }
+    .chapter--narrator .body-box { max-width: 730px; }
+    .chapter--tempo .title-box { min-width: 185px; }
+    .chapter--tempo .body-box { max-width: 750px; }
+    .chapter--greimas .title-box {
+      min-width: 390px;
+      font-size: 24px;
+      padding: 24px 36px;
+    }
+    .chapter--greimas .body-box { max-width: 755px; }
+    .chapter--greimas ol {
+      margin: 15px 0 0;
+      padding-left: 33px;
+    }
+    .chapter--greimas li { padding-left: 5px; margin: 5px 0; }
+    .special-list {
+      margin: 0;
+      padding-left: 33px;
+      font-size: 21px;
+      line-height: 1.8;
+    }
+    .special-list li { padding-left: 3px; }
+    .branch-heading {
+      width: min(100%, 480px);
+      font-size: 20px;
+      line-height: 1.5;
+      font-weight: 650;
+      text-align: left;
+      padding: 19px 28px;
+    }
+    .fork {
+      display: block;
+      width: 100%;
+      height: 120px;
+      overflow: visible;
+    }
+    .fork > path {
+      fill: none;
+      stroke: var(--line);
+      stroke-width: 2;
+      vector-effect: non-scaling-stroke;
+      stroke-linecap: round;
+    }
+    .branches {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 27px;
+      align-items: start;
+    }
+    .branch-col { min-width: 0; }
+    .branch-box {
+      width: 100%;
+      font-size: 17px;
+      line-height: 1.56;
+      font-weight: 600;
+      padding: 25px 25px;
+      border-radius: 17px;
+      min-height: 240px;
+    }
+    .branch-box.centered { text-align: center; }
+    .branches--discorso .branch-box { min-height: 265px; }
+    .example-box {
+      width: 90%;
+      min-height: 108px;
+      border-radius: 16px;
+      padding: 15px 21px;
+      font-size: 17px;
+      line-height: 1.45;
+      text-align: center;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .example-stem { height: 116px; }
+    .chapter--greimas .roles-box { padding-top: 40px; padding-bottom: 43px; }
+    .end-mark { height: 34px; width: 2px; background: var(--line); margin: 0 auto; }
+
+    @media (max-width: 950px) {
+      .mappa { padding: 30px 22px 66px; }
+      .branches { gap: 12px; }
+      .branch-box { font-size: 15px; padding: 20px 14px; min-height: 305px; }
+      .branches--discorso .branch-box { min-height: 340px; }
+      .example-box { width: 100%; font-size: 14px; }
+    }
+    @media (max-width: 700px) {
+      .mappa { padding: 24px 14px 60px; }
+      .box { border-radius: 18px; }
+      .title-main { min-width: 0; width: fit-content; font-size: 28px; padding: 19px 24px; }
+      .title-box { min-width: 0; font-size: 20px; padding: 15px 23px; }
+      .chapter--greimas .title-box { min-width: 0; font-size: 20px; }
+      .question { font-size: 18px; padding: 12px 18px; }
+      .intro-text { font-size: 19px; line-height: 1.5; padding: 24px 19px; }
+      .body-box { font-size: 17px; line-height: 1.54; padding: 25px 21px; }
+      .stem { height: 58px; }
+      .stem--small { height: 37px; }
+      .stem--long { height: 75px; }
+      .stem--section { height: 85px; }
+      .branch-heading { font-size: 18px; padding: 18px 20px; }
+      .fork { display: none; }
+      .branches {
+        grid-template-columns: 1fr;
+        max-width: 540px;
+        margin: 0 auto;
+        gap: 36px;
+      }
+      .branch-col { position: relative; }
+      .branch-col::before {
+        content: "";
+        display: block;
+        height: 45px;
+        width: 2px;
+        background: var(--line);
+        margin: 0 auto;
+      }
+      .branch-col::after {
+        content: "";
+        position: absolute;
+        top: 38px;
+        left: calc(50% - 6px);
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 9px solid var(--line);
+      }
+      .branch-box, .branches--discorso .branch-box {
+        min-height: unset;
+        font-size: 17px;
+        line-height: 1.55;
+        padding: 25px 23px;
+      }
+      .branch-box.centered { text-align: left; }
+      .example-stem { height: 48px; }
+      .example-box { min-height: 75px; font-size: 16px; width: 92%; }
+      .special-list { font-size: 18px; }
+      .chapter--greimas .roles-box { padding-top: 27px; padding-bottom: 27px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+    @media print {
+      @page { size: A3 portrait; margin: 12mm; }
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      body { background: white; }
+      .mappa { padding: 0; width: 100%; max-width: none; overflow: visible; }
+      .box, .branches, .chapter { break-inside: avoid-page; }
+      .stem--section { height: 60px; }
+      .stem--long { height: 58px; }
+      .stem { height: 52px; }
+      .fork { height: 90px; }
+      .branch-box { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+<main class="mappa" aria-label="Mappa completa di narratologia">
+  <!-- TEORIA 1: NARRATOLOGIA -->
+  <section class="chapter chapter--intro" aria-label="Narratologia">
+    <h1 class="box gray title-box title-main">NARRATOLOGIA</h1>
+    <span class="stem stem--small" aria-hidden="true"></span>
+    <div class="question">Cos'&egrave;?</div>
+    <span class="stem" aria-hidden="true"></span>
+    <div class="box gray intro-text">
+      &egrave; la disciplina che studia come vengono raccontate le storie, cio&egrave; le strutture, le tecniche e gli elementi che permettono di costruire un testo narrativo.
+    </div>
+  </section>
+
+  <span class="stem stem--section" aria-hidden="true"></span>
+
+  <!-- TEORIA 2: FABULA, INTRECCIO E SALTI TEMPORALI -->
+  <section class="chapter chapter--green" aria-label="Gli elementi del racconto">
+    <h2 class="box green title-box">Gli elementi del racconto</h2>
+    <span class="stem stem--long" aria-hidden="true"></span>
+    <div class="box green body-box">
+      <p><strong>Fabula:</strong> &Egrave; la &quot;struttura&quot; principale della vicenda. Segue l'ordine cronologico degli eventi (dall'inizio alla fine). Pu&ograve; riassumersi con la domanda <em>&quot;Cosa &egrave; successo davvero, in ordine?&quot;</em></p>
+      <p><strong>Intreccio:</strong> &Egrave; la struttura narrativa scelta dall'autore. Pu&ograve; seguire l'ordine della fabula oppure romperlo senza seguire l'ordine cronologico degli eventi.</p>
+    </div>
+    <span class="stem stem--long" aria-hidden="true"></span>
+    <div class="box green body-box">
+      <p>Questa &quot;rottura&quot; del classico schema narrativo, che segue l'ordine cronologico, pu&ograve; avvenire secondo varie tecniche:</p>
+      <p><strong>Flashback (Analessi):</strong> &egrave; un salto nel passato con cui l'autore ci racconta eventi gi&agrave; avvenuti.</p>
+      <p><strong>Flashforward (Prolessi):</strong> l'autore fa un salto in avanti anticipando eventi che accadranno nel futuro.</p>
+    </div>
+  </section>
+
+  <span class="stem stem--section" aria-hidden="true"></span>
+
+  <!-- TEORIA 3: NARRATORE -->
+  <section class="chapter chapter--narrator" aria-label="Narratore e focalizzazione">
+    <h2 class="box cyan title-box">Narratore e focalizzazione</h2>
+    <span class="stem stem--long" aria-hidden="true"></span>
+    <div class="box cyan body-box">
+      <p>Il <strong>narratore</strong> &egrave; la voce che racconta i fatti all'interno del testo, da non confondere con l'<strong>autore</strong>, la persona reale che ha scritto il libro.</p>
+    </div>
+    <span class="stem stem--long" aria-hidden="true"></span>
+    <div class="box cyan body-box">
+      <p>Il narratore pu&ograve; essere:</p>
+      <p><strong>Interno (Omodiegetico),</strong> cio&egrave; &egrave; un personaggio all'interno della storia che la racconta.</p>
+      <p><strong>Esterno (Eterodiegetico),</strong> il narratore non &egrave; un personaggio della storia.</p>
+    </div>
+  </section>
+
+  <span class="stem stem--section" aria-hidden="true"></span>
+
+  <!-- TEORIA 4: FOCALIZZAZIONE -->
+  <section class="chapter chapter--focalizzazione" aria-label="I tre tipi di focalizzazione">
+    <h2 class="box cyan branch-heading">Il punto di vista del narratore (<strong>FOCALIZZAZIONE</strong>) si divide principalmente in 3 categorie:</h2>
+    <svg class="fork" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs>
+        <marker id="arrow-f" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#dce0e5" stroke="none"/></marker>
+      </defs>
+      <path d="M600,0 C600,54 187,63 187,114" marker-end="url(#arrow-f)"></path>
+      <path d="M600,0 L600,114" marker-end="url(#arrow-f)"></path>
+      <path d="M600,0 C600,54 1013,63 1013,114" marker-end="url(#arrow-f)"></path>
+    </svg>
+    <div class="branches branches--focalizzazione">
+      <div class="branch-col">
+        <div class="box cyan branch-box">
+          <p><strong>Focalizzazione zero (Narratore onnisciente):</strong></p>
+          <p>Il narratore sa pi&ugrave; dei personaggi. Conosce il passato, il futuro, i luoghi, i pensieri, le emozioni di tutti i personaggi. La prospettiva del narratore &egrave; totale.</p>
+        </div>
+      </div>
+      <div class="branch-col">
+        <div class="box cyan branch-box">
+          <p><strong>Focalizzazione interna:</strong></p>
+          <p>Il punto di vista &egrave; limitato a quello di un personaggio. Il narratore sa e dice solo ci&ograve; che quel personaggio sa, vede o prova. La prospettiva resta sempre ancorata a un unico personaggio.</p>
+        </div>
+      </div>
+      <div class="branch-col">
+        <div class="box cyan branch-box centered">
+          <p><strong>Focalizzazione esterna</strong></p>
+          <p>Il narratore agisce come una telecamera nascosta: registra eventi, dialoghi, gesti ma non ha accesso ai loro pensieri, emozioni o ricordi. La prospettiva del narratore &egrave; distaccata e neutrale.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <span class="stem stem--section" aria-hidden="true"></span>
+
+  <!-- TEORIA 5: TEMPO -->
+  <section class="chapter chapter--tempo" aria-label="Tempo della storia e tempo del racconto">
+    <h2 class="box pink title-box">Tempo</h2>
+    <span class="stem stem--long" aria-hidden="true"></span>
+    <div class="box pink body-box">
+      <p>Bisogna distinguere due tempi diversi:</p>
+      <p><strong>Tempo della storia:</strong> cio&egrave; il tempo in cui la storia si sviluppa e si conclude.</p>
+      <p><strong>Tempo del racconto:</strong> &egrave; il tempo (righe, pagine, capitoli) impiegato per leggerli. A seconda di come lo scrittore fa interagire tempo della storia e tempo del racconto, si ottengono cinque categorie:</p>
+    </div>
+    <span class="stem stem--long" aria-hidden="true"></span>
+    <div class="box pink body-box">
+      <ol class="special-list">
+        <li><strong>Scena</strong></li>
+        <li><strong>Sommario</strong></li>
+        <li><strong>Rallentamento</strong></li>
+        <li><strong>Pausa</strong></li>
+        <li><strong>Ellissi</strong></li>
+      </ol>
+    </div>
+  </section>
+
+  <span class="stem stem--section" aria-hidden="true"></span>
+
+  <!-- TEORIA 6: FORME DEL DISCORSO -->
+  <section class="chapter chapter--discorso" aria-label="Le forme del discorso">
+    <h2 class="box purple title-box">Le forme del discorso</h2>
+    <svg class="fork" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs>
+        <marker id="arrow-d" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#dce0e5" stroke="none"/></marker>
+      </defs>
+      <path d="M600,0 C600,54 187,63 187,114" marker-end="url(#arrow-d)"></path>
+      <path d="M600,0 L600,114" marker-end="url(#arrow-d)"></path>
+      <path d="M600,0 C600,54 1013,63 1013,114" marker-end="url(#arrow-d)"></path>
+    </svg>
+    <div class="branches branches--discorso">
+      <div class="branch-col">
+        <div class="box purple branch-box">
+          <p><strong>Discorso diretto:</strong> Riporta in modo esatto le parole pronunciate da un personaggio, senza alcuna mediazione da parte del narratore. &Egrave; introdotto da un verbo dichiarativo (<em>dire, esclamare, chiedere</em>) seguito dai due punti e le virgolette. Si usa la prima o la seconda persona (io, tu).</p>
+        </div>
+        <span class="stem example-stem" aria-hidden="true"></span>
+        <div class="box purple example-box">
+          <p><strong>Esempio:</strong> Sara pens&ograve;: &laquo;Non superer&ograve; mai questo esame&raquo;.</p>
+        </div>
+      </div>
+      <div class="branch-col">
+        <div class="box purple branch-box">
+          <p><strong>Discorso indiretto:</strong> Riporta il contenuto delle parole o dei pensieri del personaggio adattandoli alla voce del narratore, inserendoli in una proposizione di solito introdotta da <em>che</em> o <em>di</em>. Cambiano le persone grammaticali (la 1&ordf; persona diventa 3&ordf;), i pronomi, gli aggettivi possessivi, i tempi verbali.</p>
+        </div>
+        <span class="stem example-stem" aria-hidden="true"></span>
+        <div class="box purple example-box">
+          <p><strong>Esempio:</strong> Sara pens&ograve; che non avrebbe mai superato quell'esame.</p>
+        </div>
+      </div>
+      <div class="branch-col">
+        <div class="box purple branch-box">
+          <p><strong>Discorso indiretto libero:</strong> &Egrave; una forma ibrida in cui la voce del narratore e quella del personaggio si fondono. Il narratore racconta in terza persona e al passato, ma adotta i pensieri, il lessico, le emozioni e le espressioni tipiche del personaggio.</p>
+        </div>
+        <span class="stem example-stem" aria-hidden="true"></span>
+        <div class="box purple example-box">
+          <p><strong>Esempio:</strong> Sara fissava il foglio bianco con le mani tremanti. Non avrebbe mai superato quell'esame.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <span class="stem stem--section" aria-hidden="true"></span>
+
+  <!-- TEORIA 7: MODELLO ATTANZIALE DI GREIMAS -->
+  <section class="chapter chapter--greimas" aria-label="I ruoli di Greimas e il modello attanziale">
+    <h2 class="box orange title-box">I ruoli di Greimas<br>Il modello attanziale</h2>
+    <span class="stem stem--long" aria-hidden="true"></span>
+    <div class="box orange body-box">
+      <p>Lo schema attanziale &egrave; uno strumento che serve ad analizzare una storia, individuando i ruoli svolti dai personaggi. Il modello di Greimas &egrave; uno schema che analizza le storie e i testi non attraverso i personaggi concreti, ma tramite le funzioni narrative che ricoprono. Non bisogna confondere questi ruoli con i personaggi stessi: un personaggio pu&ograve; svolgere pi&ugrave; ruoli e, in alcune storie, uno stesso ruolo pu&ograve; essere svolto da pi&ugrave; personaggi.</p>
+    </div>
+    <span class="stem stem--long" aria-hidden="true"></span>
+    <div class="box orange body-box roles-box">
+      <p>I ruoli principali sono:</p>
+      <ol>
+        <li><strong>Soggetto:</strong> &egrave; il personaggio che agisce e cerca di raggiungere un obiettivo</li>
+        <li><strong>Oggetto del desiderio:</strong> &egrave; ci&ograve; che il soggetto vuole ottenere o realizzare.</li>
+        <li><strong>Destinatario:</strong> &egrave; chi ottiene il beneficio del raggiungimento dell'obiettivo, cio&egrave; chi riceve il risultato positivo</li>
+        <li><strong>Aiutante:</strong> &egrave; chi aiuta a raggiungere l'obiettivo da parte del soggetto</li>
+        <li><strong>Oppositore:</strong> l'antagonista, colui che ostacola il soggetto</li>
+        <li><strong>Destinante:</strong> &egrave; chi affida al soggetto il compito o lo spinge a raggiungere l'obiettivo.</li>
+      </ol>
+    </div>
+    <div class="end-mark" aria-hidden="true"></div>
+  </section>
+</main>
+</body>
+</html>
